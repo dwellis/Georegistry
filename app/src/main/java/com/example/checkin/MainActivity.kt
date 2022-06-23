@@ -2,7 +2,6 @@ package com.example.checkin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.checkin.ui.main.MainFragment
 
 class MainActivity : AppCompatActivity() {
 
