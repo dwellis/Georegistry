@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">CheckIn</string>
+    <string name="app_name">QuickCheck</string>
+    <string name="title_activity_maps">QuickCheck</string>
+
+    <!--    menu strings-->
+    <string name="main_menu_home">Home</string>
+    <string name="main_menu_maps">Maps</string>
+    <string name="main_menu_forms">Forms</string>
 </resources>
