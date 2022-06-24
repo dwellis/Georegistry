@@ -30,14 +30,15 @@
         android:layout_marginRight="15dp"/>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/forms_submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/forms_last_name_input"
-        android:layout_marginTop="30dp"/>
+        android:layout_marginTop="30dp"
+        />
 
     <EditText
         android:id="@+id/forms_birthday"
