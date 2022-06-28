@@ -67,6 +67,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 startActivity(formsIntent)
                 true
             }
+            R.id.main_menu_profile -> {
+                var profileIntent = Intent(this, LoginActivity::class.java)
+                startActivity(profileIntent)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

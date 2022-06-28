@@ -52,6 +52,11 @@ class MainFragment : Fragment() {
                 startActivity(formsIntent)
                 true
             }
+            R.id.main_menu_profile -> {
+                var profileIntent = Intent(context, LoginActivity::class.java)
+                startActivity(profileIntent)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
