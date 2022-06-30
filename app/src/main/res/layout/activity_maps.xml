@@ -1,9 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MapsActivity" />
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fragment
+            xmlns:map="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".MapsActivity" />
+
+        <Button
+            android:id="@+id/maps_button_geofence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Check In"
+            android:visibility="visible"
+            android:enabled="false"Added
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <EditText
+            android:id="@+id/maps_long_input"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:visibility="invisible"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            app:layout_constraintBottom_toTopOf="@+id/maps_button_geofence"
+            app:layout_constraintEnd_toEndOf="@+id/maps_button_geofence" />
+
+        <EditText
+            android:id="@+id/maps_lat_input"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_marginBottom="10dp"
+            android:visibility="invisible"
+            android:inputType="numberDecimal"
+            app:layout_constraintBottom_toTopOf="@+id/maps_long_input"
+            app:layout_constraintEnd_toEndOf="@+id/maps_long_input" />
+
+        <TextView
+            android:id="@+id/maps_lat_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lat"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="5dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/maps_lat_input"
+            app:layout_constraintEnd_toStartOf="@+id/maps_lat_input" />
+
+        <TextView
+            android:id="@+id/maps_long_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Long"
+            android:visibility="invisible"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="5dp"
+            app:layout_constraintBottom_toBottomOf="@+id/maps_long_input"
+            app:layout_constraintEnd_toStartOf="@+id/maps_long_input" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
+

@@ -17,4 +17,14 @@
     <string name="login_failed">"Login failed"</string>
     <string name="main_menu_profile">Profile</string>
     <string name="action_register">Register Account</string>
+    <string name="forms_action_submit">Submit</string>
+    <string name="last_name_label_text">Last Name</string>
+    <string name="forms_welcome_text">Welcome!</string>
+    <string name="forms_birthday_label_text">Birthday</string>
+    <string name="forms_first_name_label_text">First Name</string>
+    <string name="profile_welcome_text">Welcome!</string>
+    <string name="create_an_account_title">Create an Account</string>
+    <string name="create_account_subtitle">Please fill out the information below</string>
+    <string name="create_account_first_name_label">First Name</string>
+    <string name="profile_title_text">Profile Information</string>
 </resources>
