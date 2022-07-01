@@ -15,6 +15,7 @@ import com.example.checkin.databinding.ActivityMapsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
@@ -36,10 +37,18 @@ class LoginActivity : AppCompatActivity() {
             signIn(binding.username.text.toString(), binding.password.text.toString())
         }
 
-        binding.register.setOnClickListener {
-            Log.d(TAG, "Register clicked")
-            createAccount(binding.username.text.toString(), binding.password.text.toString())
+        binding.loginButtonCreateAccount.setOnClickListener {
+            Log.d(TAG, "Create account clicked")
+            val intent = Intent(this, CreateAccount::class.java)
+            startActivity(intent)
         }
+
+//        binding.register.setOnClickListener {
+//            Log.d(TAG, "Register clicked")
+////            createAccount(binding.username.text.toString(), binding.password.text.toString())
+//            val createIntent = Intent(this, CreateAccount::class.java)
+//            startActivity(createIntent)
+//        }
     }
 
     override fun onStart() {
@@ -58,51 +67,100 @@ class LoginActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
-            R.id.main_menu_home -> {
-                var homeIntent = Intent(this, MainActivity::class.java)
-                startActivity(homeIntent)
-                true
+        if(FirebaseAuth.getInstance().currentUser == null) {
+            return when(item.itemId) {
+                R.id.main_menu_home -> {
+                    var homeIntent = Intent(this, MainActivity::class.java)
+                    startActivity(homeIntent)
+                    true
+                }
+                R.id.main_menu_maps -> {
+                    var mapsIntent = Intent(this, MapsActivity::class.java)
+                    startActivity(mapsIntent)
+                    true
+                }
+//                R.id.main_menu_forms -> {
+//                    var formsIntent = Intent(this, FormsActivity::class.java)
+//                    startActivity(formsIntent)
+//                    true
+//                }
+                R.id.main_menu_profile -> {
+                    var loginIntent = Intent(this, LoginActivity::class.java)
+                    startActivity(loginIntent)
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
             }
-            R.id.main_menu_maps -> {
-                var mapsIntent = Intent(this, MapsActivity::class.java)
-                startActivity(mapsIntent)
-                true
+        }
+        else {
+            return when(item.itemId) {
+                R.id.main_menu_home -> {
+                    var homeIntent = Intent(this, MainActivity::class.java)
+                    startActivity(homeIntent)
+                    true
+                }
+                R.id.main_menu_maps -> {
+                    var mapsIntent = Intent(this, MapsActivity::class.java)
+                    startActivity(mapsIntent)
+                    true
+                }
+//                R.id.main_menu_forms -> {
+//                    var formsIntent = Intent(this, FormsActivity::class.java)
+//                    startActivity(formsIntent)
+//                    true
+//                }
+                R.id.main_menu_profile -> {
+                    var profileIntent = Intent(this, ProfileActivity::class.java)
+                    startActivity(profileIntent)
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
             }
-            R.id.main_menu_forms -> {
-                var formsIntent = Intent(this, FormsActivity::class.java)
-                startActivity(formsIntent)
-                true
-            }
-            R.id.main_menu_profile -> {
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 
 
-    private fun createAccount(email: String, password: String) {
-        // [START create_user_with_email]
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "createUserWithEmail:success")
-                    val user = auth.currentUser
-                    updateUI(user)
-                    var homeIntent = Intent(this, MainActivity::class.java)
-                    startActivity(homeIntent)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
-                    updateUI(null)
-                }
-            }
-        // [END create_user_with_email]
-    }
+//    private fun createAccount(email: String, password: String) {
+//        // [START create_user_with_email]
+//        auth.createUserWithEmailAndPassword(email, password)
+//            .addOnCompleteListener(this) { task ->
+//                if (task.isSuccessful) {
+//                    // Sign in success, update UI with the signed-in user's information
+//                    Log.d(TAG, "createUserWithEmail:success")
+//                    val user = auth.currentUser
+//                    updateUI(user)
+//                    var homeIntent = Intent(this, MainActivity::class.java)
+//                    startActivity(homeIntent)
+//                } else {
+//                    // If sign in fails, display a message to the user.
+//                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
+//                    Toast.makeText(baseContext, "Authentication failed.",
+//                        Toast.LENGTH_SHORT).show()
+//                    updateUI(null)
+//                }
+//            }
+//        // [END create_user_with_email]
+//    }
+
+//    private  fun createAccountData(
+//        UID : String,
+//        birthday: String?,
+//        firstName: String?,
+//        lastName: String?,
+//        email: String) {
+//        val account = LoginActivity.UserAccount(auth.currentUser?.uid.toString(), )
+//    }
+//
+//    fun writeNewCheckIn(checkInId : String, birthday: String?, firstName: String?, lastName: String?) {
+//        val checkIn = FormsFragment.CheckIn(birthday, firstName, lastName)
+//        database.child("checkIns").child(checkInId).setValue(checkIn)
+//    }
+//
+//    @IgnoreExtraProperties
+//    data class UserAccount(val UID : String? = null, val birthday: String? = null, val firstName: String? = null, val lastName: String? = null, val email : String? = null) {
+//        // Null default values create a no-argument default constructor, which is needed
+//        // for deserialization from a DataSnapshot.
+//    }
 
     private fun signIn(email: String, password: String) {
         // [START sign_in_with_email]
@@ -114,6 +172,7 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(baseContext, "Signed In.", Toast.LENGTH_SHORT).show()
                     val user = auth.currentUser
                     updateUI(user)
+                    sendEmailVerification()
                     var homeIntent = Intent(this, MainActivity::class.java)
                     startActivity(homeIntent)
                 } else {
@@ -138,10 +197,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateUI(user: FirebaseUser?) {
-        binding.username.isVisible = false
-        binding.password.isVisible = false
-        binding.login.isVisible = false
-        binding.register.isVisible = false
+
     }
 
     private fun reload() {

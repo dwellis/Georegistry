@@ -4,13 +4,14 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.checkin.R
 import com.example.checkin.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -18,17 +19,31 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private lateinit var mMap: GoogleMap
+    private lateinit var gMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+    private lateinit var database: DatabaseReference
 
     private val REQUEST_LOCATION_PERMISSION = 1
+
+    companion object {
+        private const val TAG = "MapsActivity"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        database = Firebase.database.reference
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -40,6 +55,35 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // for finding current location
 
+        // place a marker and move camera to entered location
+        binding.mapsButtonGeofence.setOnClickListener {
+            // Add a marker in Sydney and move the camera
+            val loc = LatLng(binding.mapsLatInput.text.toString().toDouble(), binding.mapsLongInput.text.toString().toDouble())
+            gMap.addMarker(MarkerOptions().position(loc).title("Your Check In Location"))
+            gMap.moveCamera(CameraUpdateFactory.newLatLng(loc))
+        }
+
+
+        // enable geofence menu if admin
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val admin = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("admin").value.toString()
+                if(admin.toBoolean()) {
+                    binding.mapsLatInput.visibility = View.VISIBLE
+                    binding.mapsLongInput.visibility = View.VISIBLE
+                    binding.mapsLatLabel.visibility = View.VISIBLE
+                    binding.mapsLongLabel.visibility = View.VISIBLE
+                    binding.mapsButtonGeofence.isEnabled = true
+
+                }
+
+                Log.d(MapsActivity.TAG, "onDataChange: ${admin.toString()}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d(MapsActivity.TAG, "onCancelled: Failed to read value")
+            }
+        })
 
 
     }
@@ -51,28 +95,50 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
-            R.id.main_menu_home -> {
-                var homeIntent = Intent(this, MainActivity::class.java)
-                startActivity(homeIntent)
-                true
+        if(FirebaseAuth.getInstance().currentUser == null) {
+            return when(item.itemId) {
+                R.id.main_menu_home -> {
+                    var homeIntent = Intent(this, MainActivity::class.java)
+                    startActivity(homeIntent)
+                    true
+                }
+                R.id.main_menu_maps -> {
+                    var mapsIntent = Intent(this, MapsActivity::class.java)
+                    startActivity(mapsIntent)
+                    true
+                }
+//                R.id.main_menu_forms -> {
+//                    var formsIntent = Intent(this, FormsActivity::class.java)
+//                    startActivity(formsIntent)
+//                    true
+//                }
+                R.id.main_menu_profile -> {
+                    var loginIntent = Intent(this, LoginActivity::class.java)
+                    startActivity(loginIntent)
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
             }
-            R.id.main_menu_maps -> {
-                var mapsIntent = Intent(this, MapsActivity::class.java)
-                startActivity(mapsIntent)
-                true
+        }
+        else {
+            return when(item.itemId) {
+                R.id.main_menu_home -> {
+                    var homeIntent = Intent(this, MainActivity::class.java)
+                    startActivity(homeIntent)
+                    true
+                }
+                R.id.main_menu_maps -> {
+                    var mapsIntent = Intent(this, MapsActivity::class.java)
+                    startActivity(mapsIntent)
+                    true
+                }
+                R.id.main_menu_profile -> {
+                    var profileIntent = Intent(this, ProfileActivity::class.java)
+                    startActivity(profileIntent)
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
             }
-            R.id.main_menu_forms -> {
-                var formsIntent = Intent(this, FormsActivity::class.java)
-                startActivity(formsIntent)
-                true
-            }
-            R.id.main_menu_profile -> {
-                var profileIntent = Intent(this, LoginActivity::class.java)
-                startActivity(profileIntent)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -86,34 +152,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
+        gMap = googleMap
 
         // enable location tracking
         enableMyLocation()
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        with(gMap.uiSettings) {
+            isZoomControlsEnabled = true
+            isCompassEnabled = true
+            isZoomGesturesEnabled = true
+            isScrollGesturesEnabled = true
+            isMyLocationButtonEnabled = true
+        }
+
     }
 
     private fun isPermissionGranted() : Boolean {
         return ContextCompat.checkSelfPermission(
             this,
             Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun enableMyLocation() {
-        if (isPermissionGranted()) {
-            mMap.isMyLocationEnabled = true
-        }
-        else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_LOCATION_PERMISSION
-            )
-        }
     }
 
     override fun onRequestPermissionsResult(
@@ -129,5 +186,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun enableMyLocation() {
+        if (isPermissionGranted()) {
+            gMap.isMyLocationEnabled = true
+        }
+        else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_LOCATION_PERMISSION
+            )
+        }
+    }
 
 }
