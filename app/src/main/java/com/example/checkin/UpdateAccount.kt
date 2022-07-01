@@ -21,6 +21,8 @@ class UpdateAccount : AppCompatActivity() {
 
     private lateinit var binding : ActivityUpdateAccountBinding
     private lateinit var database: DatabaseReference
+    private lateinit var accounts : DatabaseReference
+    private lateinit var account : DatabaseReference
 
     companion object {
         private const val TAG = "UpdateAccount"
@@ -31,11 +33,24 @@ class UpdateAccount : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         database = Firebase.database.reference
+        accounts = Firebase.database.reference.child("accounts")
+        account = accounts.child(Firebase.auth.currentUser?.uid.toString())
+
 
         binding = ActivityUpdateAccountBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.buttonUpdate.setOnClickListener {
+
+            Firebase.auth.currentUser?.updateEmail(binding.createAccountEmailInput.text.toString())
+            Firebase.auth.currentUser?.updatePassword(binding.createAccountPasswordInput.text.toString())
+
+            account.child("firstName").setValue(binding.createAccountFirstNameInput.text.toString())
+            account.child("lastName").setValue(binding.createAccountLastNameInput.text.toString())
+            account.child("birthday").setValue(binding.createAccountBirthdayInput.text.toString())
+            account.child("admin").setValue(binding.createAccountAdminCheckbox.isChecked)
+            account.child("email").setValue(binding.createAccountEmailInput.text.toString())
+
             val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
