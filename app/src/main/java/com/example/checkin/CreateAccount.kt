@@ -38,7 +38,7 @@ class CreateAccount : AppCompatActivity() {
 
         database = Firebase.database.reference
 
-        binding.register.setOnClickListener {
+        binding.buttonUpdate.setOnClickListener {
             Log.d(CreateAccount.TAG, "Register clicked")
             createAccount(binding.createAccountEmailInput.text.toString(), binding.createAccountPasswordInput.text.toString())
 
@@ -64,11 +64,11 @@ class CreateAccount : AppCompatActivity() {
                     startActivity(mapsIntent)
                     true
                 }
-                R.id.main_menu_forms -> {
-                    var formsIntent = Intent(this, FormsActivity::class.java)
-                    startActivity(formsIntent)
-                    true
-                }
+//                R.id.main_menu_forms -> {
+//                    var formsIntent = Intent(this, FormsActivity::class.java)
+//                    startActivity(formsIntent)
+//                    true
+//                }
                 R.id.main_menu_profile -> {
                     var loginIntent = Intent(this, LoginActivity::class.java)
                     startActivity(loginIntent)
@@ -89,11 +89,11 @@ class CreateAccount : AppCompatActivity() {
                     startActivity(mapsIntent)
                     true
                 }
-                R.id.main_menu_forms -> {
-                    var formsIntent = Intent(this, FormsActivity::class.java)
-                    startActivity(formsIntent)
-                    true
-                }
+//                R.id.main_menu_forms -> {
+//                    var formsIntent = Intent(this, FormsActivity::class.java)
+//                    startActivity(formsIntent)
+//                    true
+//                }
                 R.id.main_menu_profile -> {
                     var profileIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(profileIntent)
@@ -113,17 +113,17 @@ class CreateAccount : AppCompatActivity() {
                     Log.d(CreateAccount.TAG, "createUserWithEmail:success")
                     val user = auth.currentUser
 
+                    Toast.makeText(this, "User created", Toast.LENGTH_SHORT)
+
                     val account = UserAccount(auth.currentUser?.uid.toString(),
                         binding.createAccountBirthdayInput.text.toString(),
                         binding.createAccountFirstNameInput.text.toString(),
                         binding.createAccountLastNameInput.text.toString(),
                         auth.currentUser?.email.toString(),
                         binding.createAccountAdminCheckbox.isChecked)
-                    database.child("Users").child(auth.currentUser?.uid.toString()).setValue(account)
-                    Log.d(TAG, "User Data Created")
-
-                    Toast.makeText(this, "User created", Toast.LENGTH_SHORT)
-
+                    database.child("accounts").child(auth.currentUser?.uid.toString()).setValue(account).addOnCompleteListener {
+                        Log.d(TAG, "Account Data Created")
+                    }
 
                     var intent = Intent(this, ProfileActivity::class.java)
                     startActivity(intent)

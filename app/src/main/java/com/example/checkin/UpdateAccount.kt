@@ -7,36 +7,35 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Toast
-import com.example.checkin.databinding.ActivityMapsBinding
-import com.example.checkin.databinding.ActivityProfileBinding
+import com.example.checkin.databinding.ActivityUpdateAccountBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import kotlin.math.log
 
-class ProfileActivity : AppCompatActivity() {
+class UpdateAccount : AppCompatActivity() {
 
-    private lateinit var binding: ActivityProfileBinding
+    private lateinit var binding : ActivityUpdateAccountBinding
     private lateinit var database: DatabaseReference
 
     companion object {
-        private const val TAG = "ProfileActivity"
+        private const val TAG = "UpdateAccount"
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         database = Firebase.database.reference
 
-        binding = ActivityProfileBinding.inflate(layoutInflater)
+        binding = ActivityUpdateAccountBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        // update inputs to current values
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val value = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("firstName").value
@@ -46,41 +45,20 @@ class ProfileActivity : AppCompatActivity() {
                 val birthday = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("birthday").value.toString()
                 val admin = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("admin").value.toString()
 
-                binding.profileWelcome.text = welcomeText
-                binding.profileNameText.text = fullName
-                binding.profileEmailText.text = email
-                binding.profileBirthdayText.text = birthday
-                binding.profileAdminText.text = admin
+                binding.createAccountFirstNameInput.setText(snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("firstName").value.toString())
+                binding.createAccountLastNameInput.setText(snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("lastName").value.toString())
+                binding.createAccountBirthdayInput.setText(snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("birthday").value.toString())
+                binding.createAccountEmailInput.setText(snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("email").value.toString())
+                binding.createAccountAdminCheckbox.isChecked = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("admin").value.toString().toBoolean()
 
-                Log.d(TAG, "onDataChange: ${value.toString()}")
+
+                Log.d(UpdateAccount.TAG, "onDataChange: ${value.toString()}")
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.d(TAG, "onCancelled: Failed to read value")
+                Log.d(UpdateAccount.TAG, "onCancelled: Failed to read value")
             }
         })
-
-
-
-
-
-        binding.profileResetPassword.setOnClickListener {
-            resetPassword()
-        }
-
-        binding.profileButtonDelete.setOnClickListener {
-            deleteUser()
-        }
-
-        binding.profileButtonSignOut.setOnClickListener {
-            signOut()
-        }
-
-        binding.profileButtonUpdate.setOnClickListener {
-            val intent = Intent(this, UpdateAccount::class.java)
-            startActivity(intent)
-        }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -102,11 +80,6 @@ class ProfileActivity : AppCompatActivity() {
                     startActivity(mapsIntent)
                     true
                 }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
                 R.id.main_menu_profile -> {
                     var loginIntent = Intent(this, LoginActivity::class.java)
                     startActivity(loginIntent)
@@ -127,11 +100,6 @@ class ProfileActivity : AppCompatActivity() {
                     startActivity(mapsIntent)
                     true
                 }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
                 R.id.main_menu_profile -> {
                     var profileIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(profileIntent)
@@ -140,51 +108,5 @@ class ProfileActivity : AppCompatActivity() {
                 else -> super.onOptionsItemSelected(item)
             }
         }
-    }
-
-    private fun resetPassword() {
-        if(Firebase.auth.currentUser != null) {
-            val emailAddress = Firebase.auth.currentUser!!.email.toString()
-            Firebase.auth.sendPasswordResetEmail(emailAddress).addOnCompleteListener { task ->
-                if(task.isSuccessful) {
-                    Log.d(ProfileActivity.TAG, "Password reset email sent")
-                    Toast.makeText(this,"Password reset email sent", Toast.LENGTH_SHORT )
-                }
-            }
-        }
-    }
-
-    private fun deleteUser() {
-        val user = Firebase.auth.currentUser!!
-
-        user.delete().addOnCompleteListener { task ->
-            if(task.isSuccessful) {
-                Log.d(TAG, "User account deleted.")
-
-                database.addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).ref.removeValue()
-
-
-                        Log.d(TAG, "onDataChange: ${snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).toString()} Removed")
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.d(TAG, "onCancelled: Failed to read value")
-                    }
-                })
-
-                Toast.makeText(this,"User account deleted", Toast.LENGTH_SHORT )
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
-            }
-        }
-    }
-
-    private fun signOut() {
-        Firebase.auth.signOut()
-        Toast.makeText(this, "User signed out", Toast.LENGTH_SHORT)
-        val loginIntent = Intent(this, LoginActivity::class.java)
-        startActivity(loginIntent)
     }
 }

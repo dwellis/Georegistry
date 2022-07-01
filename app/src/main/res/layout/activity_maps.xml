@@ -12,68 +12,73 @@
         android:layout_height="match_parent">
 
         <fragment
-            xmlns:map="http://schemas.android.com/apk/res-auto"
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".MapsActivity" />
+            tools:context=".MapsActivity"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="16dp" />
 
         <Button
             android:id="@+id/maps_button_geofence"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="15dp"
+            android:enabled="false"
             android:text="Add Check In"
             android:visibility="visible"
-            android:enabled="false"
-            android:layout_marginBottom="15dp"
-            android:layout_marginRight="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
             android:id="@+id/maps_long_input"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:visibility="invisible"
+            android:layout_marginLeft="15dp"
             android:ems="10"
-            android:inputType="numberDecimal"
+            android:layout_marginBottom="10dp"
+            android:inputType="numberSigned"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/maps_button_geofence"
-            app:layout_constraintEnd_toEndOf="@+id/maps_button_geofence" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
             android:id="@+id/maps_lat_input"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:layout_marginBottom="10dp"
+            android:layout_marginLeft="15dp"
+            android:ems="10"
+            android:inputType="numberSigned"
             android:visibility="invisible"
-            android:inputType="numberDecimal"
             app:layout_constraintBottom_toTopOf="@+id/maps_long_input"
-            app:layout_constraintEnd_toEndOf="@+id/maps_long_input" />
+            app:layout_constraintEnd_toEndOf="@+id/maps_long_input"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/maps_lat_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:text="Lat"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="5dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/maps_lat_input"
-            app:layout_constraintEnd_toStartOf="@+id/maps_lat_input" />
+            app:layout_constraintStart_toEndOf="@+id/maps_lat_input" />
 
         <TextView
             android:id="@+id/maps_long_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:text="Long"
             android:visibility="invisible"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/maps_long_input"
-            app:layout_constraintEnd_toStartOf="@+id/maps_long_input" />
+            app:layout_constraintStart_toEndOf="@+id/maps_long_input" />
+
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

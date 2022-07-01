@@ -44,11 +44,11 @@ class FormsActivity : AppCompatActivity() {
                 startActivity(mapsIntent)
                 true
             }
-            R.id.main_menu_forms -> {
-                var formsIntent = Intent(this, FormsActivity::class.java)
-                startActivity(formsIntent)
-                true
-            }
+//            R.id.main_menu_forms -> {
+//                var formsIntent = Intent(this, FormsActivity::class.java)
+//                startActivity(formsIntent)
+//                true
+//            }
             else -> super.onOptionsItemSelected(item)
         }
     }

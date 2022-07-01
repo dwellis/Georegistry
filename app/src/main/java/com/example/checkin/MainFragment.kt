@@ -52,11 +52,11 @@ class MainFragment : Fragment() {
                     startActivity(mapsIntent)
                     true
                 }
-                R.id.main_menu_forms -> {
-                    var formsIntent = Intent(context, FormsActivity::class.java)
-                    startActivity(formsIntent)
-                    true
-                }
+//                R.id.main_menu_forms -> {
+//                    var formsIntent = Intent(context, FormsActivity::class.java)
+//                    startActivity(formsIntent)
+//                    true
+//                }
                 R.id.main_menu_profile -> {
                     var loginIntent = Intent(context, LoginActivity::class.java)
                     startActivity(loginIntent)
@@ -77,11 +77,11 @@ class MainFragment : Fragment() {
                     startActivity(mapsIntent)
                     true
                 }
-                R.id.main_menu_forms -> {
-                    var formsIntent = Intent(context, FormsActivity::class.java)
-                    startActivity(formsIntent)
-                    true
-                }
+//                R.id.main_menu_forms -> {
+//                    var formsIntent = Intent(context, FormsActivity::class.java)
+//                    startActivity(formsIntent)
+//                    true
+//                }
                 R.id.main_menu_profile -> {
                     var profileIntent = Intent(context, ProfileActivity::class.java)
                     startActivity(profileIntent)

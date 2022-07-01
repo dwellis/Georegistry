@@ -79,11 +79,11 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(mapsIntent)
                     true
                 }
-                R.id.main_menu_forms -> {
-                    var formsIntent = Intent(this, FormsActivity::class.java)
-                    startActivity(formsIntent)
-                    true
-                }
+//                R.id.main_menu_forms -> {
+//                    var formsIntent = Intent(this, FormsActivity::class.java)
+//                    startActivity(formsIntent)
+//                    true
+//                }
                 R.id.main_menu_profile -> {
                     var loginIntent = Intent(this, LoginActivity::class.java)
                     startActivity(loginIntent)
@@ -104,11 +104,11 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(mapsIntent)
                     true
                 }
-                R.id.main_menu_forms -> {
-                    var formsIntent = Intent(this, FormsActivity::class.java)
-                    startActivity(formsIntent)
-                    true
-                }
+//                R.id.main_menu_forms -> {
+//                    var formsIntent = Intent(this, FormsActivity::class.java)
+//                    startActivity(formsIntent)
+//                    true
+//                }
                 R.id.main_menu_profile -> {
                     var profileIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(profileIntent)
@@ -197,9 +197,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateUI(user: FirebaseUser?) {
-        binding.username.isVisible = false
-        binding.password.isVisible = false
-        binding.login.isVisible = false
+
     }
 
     private fun reload() {
