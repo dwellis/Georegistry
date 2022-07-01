@@ -35,15 +35,15 @@ class UpdateAccount : AppCompatActivity() {
         binding = ActivityUpdateAccountBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.buttonUpdate.setOnClickListener {
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
+        }
+
         // update inputs to current values
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val value = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("firstName").value
-                val welcomeText = "Welcome, " + snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("firstName").value.toString() + "!"
-                val fullName = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("firstName").value.toString() + " " + snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("lastName").value.toString()
-                val email = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("email").value.toString()
-                val birthday = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("birthday").value.toString()
-                val admin = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("admin").value.toString()
 
                 binding.createAccountFirstNameInput.setText(snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("firstName").value.toString())
                 binding.createAccountLastNameInput.setText(snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("lastName").value.toString())
