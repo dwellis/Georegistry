@@ -39,7 +39,7 @@
             android:layout_marginLeft="15dp"
             android:ems="10"
             android:layout_marginBottom="10dp"
-            android:inputType="numberSigned"
+            android:inputType="numberDecimal|numberSigned"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/maps_button_geofence"
             app:layout_constraintStart_toStartOf="parent" />
@@ -51,7 +51,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="15dp"
             android:ems="10"
-            android:inputType="numberSigned"
+            android:inputType="numberDecimal|numberSigned"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/maps_long_input"
             app:layout_constraintEnd_toEndOf="@+id/maps_long_input"
