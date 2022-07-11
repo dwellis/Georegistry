@@ -53,8 +53,19 @@ class ProfileActivity : AppCompatActivity() {
 
                 // if admin enable admin button
                 if(admin.toBoolean()) {
-                    binding.profileButtonAdmin.visibility = android.view.View.VISIBLE
-                    binding.profileButtonAdmin.isClickable = true
+                    binding.profileButtonOption.visibility = android.view.View.VISIBLE
+                    binding.profileButtonOption.isClickable = true
+                    binding.profileButtonOption.text = "Admin"
+                    binding.profileButtonOption.setOnClickListener {
+                        goToAdmin()
+                    }
+                } else {
+                    binding.profileButtonOption.visibility = android.view.View.VISIBLE
+                    binding.profileButtonOption.isClickable = true
+                    binding.profileButtonOption.text = "User"
+                    binding.profileButtonOption.setOnClickListener {
+                        goToUser()
+                    }
                 }
 
                 Log.d(TAG, "onDataChange: ${value.toString()}")
@@ -71,9 +82,7 @@ class ProfileActivity : AppCompatActivity() {
 
 
 
-        binding.profileButtonAdmin.setOnClickListener {
-            goToAdmin()
-        }
+
 
         binding.profileButtonDelete.setOnClickListener {
             deleteUser()
@@ -161,11 +170,6 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun goToAdmin() {
-        var intent = Intent(this, Admin::class.java)
-        startActivity(intent)
-    }
-
     private fun deleteUser() {
         val user = Firebase.auth.currentUser!!
 
@@ -198,5 +202,15 @@ class ProfileActivity : AppCompatActivity() {
         Toast.makeText(this, "User signed out", Toast.LENGTH_SHORT)
         val loginIntent = Intent(this, LoginActivity::class.java)
         startActivity(loginIntent)
+    }
+
+    private fun goToAdmin() {
+        var intent = Intent(this, Admin::class.java)
+        startActivity(intent)
+    }
+
+    private fun goToUser() {
+        var intent = Intent(this, User::class.java)
+        startActivity(intent)
     }
 }
