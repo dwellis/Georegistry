@@ -1,18 +1,25 @@
 package com.example.checkin
 
 import android.Manifest
+import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Debug
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.checkin.databinding.ActivityMapsBinding
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.GeofencingRequest
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -33,6 +40,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var gMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private lateinit var database: DatabaseReference
+    lateinit var geofencingClient: GeofencingClient
+
+    private val geofencePendingIntent: PendingIntent by lazy {
+        val intent = Intent(this, GeofenceBroadcastReceiver::class.java)
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
+        // addGeofences() and removeGeofences().
+        PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_MUTABLE)
+    }
 
     private val REQUEST_LOCATION_PERMISSION = 1
 
@@ -45,6 +60,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         database = Firebase.database.reference
 
+        geofencingClient = LocationServices.getGeofencingClient(this)
+
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -52,6 +69,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+
 
         // for finding current location
 
@@ -61,6 +80,37 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val loc = LatLng(binding.mapsLatInput.text.toString().toDouble(), binding.mapsLongInput.text.toString().toDouble())
             gMap.addMarker(MarkerOptions().position(loc).title("Your Check In Location"))
             gMap.moveCamera(CameraUpdateFactory.newLatLng(loc))
+
+            val geofence = Geofence.Builder()
+                .setRequestId(Firebase.auth.currentUser?.uid.toString())
+                .setCircularRegion(
+                    binding.mapsLatInput.text.toString().toDouble(),
+                    binding.mapsLongInput.text.toString().toDouble(),
+                    100f
+                )
+                .setExpirationDuration(10000L)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
+                .build()
+
+            val geofencingRequest = GeofencingRequest.Builder()
+                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                .addGeofence(geofence)
+                .build()
+
+            geofencingClient.removeGeofences(geofencePendingIntent)?.run {
+                addOnCompleteListener {
+                    Toast.makeText(this@MapsActivity, "Geofences Added", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "Added geofence")
+                }
+                addOnFailureListener {
+                    Toast.makeText(this@MapsActivity, "Failed to Add Geofence", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "Failed to add geofence")
+                }
+            }
+
+
+            Log.d(TAG, "Geofence Created")
+            Toast.makeText(this, "Geofence Created", Toast.LENGTH_SHORT).show()
         }
 
 
@@ -197,6 +247,30 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 REQUEST_LOCATION_PERMISSION
             )
         }
+    }
+
+    /**
+     * Removes geofences. This method should be called after the user has granted the location
+     * permission.
+     */
+    private fun removeGeofences() {
+        geofencingClient.removeGeofences(geofencePendingIntent)?.run {
+            addOnSuccessListener {
+                // Geofences removed
+                Log.d(TAG, "Geofences removed")
+                Toast.makeText(applicationContext, "Geofences Removed", Toast.LENGTH_SHORT)
+                    .show()
+            }
+            addOnFailureListener {
+                // Failed to remove geofences
+                Log.d(TAG, "Failed to Remove Geofences")
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        removeGeofences()
     }
 
 }

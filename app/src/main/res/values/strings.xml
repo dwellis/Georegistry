@@ -27,4 +27,9 @@
     <string name="create_account_subtitle">Please fill out the information below</string>
     <string name="create_account_first_name_label">First Name</string>
     <string name="profile_title_text">Profile Information</string>
+
+    <!-- Notification Strings-->
+    <string name="channel_name">GeofenceStatus</string>
+    <string name="content_text">You entered a Geofence.</string>
+    <string name="notification_channel_description">Geofence status notification</string>
 </resources>

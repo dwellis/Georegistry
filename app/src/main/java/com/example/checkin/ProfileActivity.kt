@@ -50,23 +50,39 @@ class ProfileActivity : AppCompatActivity() {
                 binding.profileNameText.text = fullName
                 binding.profileEmailText.text = email
                 binding.profileBirthdayText.text = birthday
-                binding.profileAdminText.text = admin
+
+                // if admin enable admin button
+                if(admin.toBoolean()) {
+                    binding.profileButtonOption.visibility = android.view.View.VISIBLE
+                    binding.profileButtonOption.isClickable = true
+                    binding.profileButtonOption.text = "Admin"
+                    binding.profileButtonOption.setOnClickListener {
+                        goToAdmin()
+                    }
+                } else {
+                    binding.profileButtonOption.visibility = android.view.View.VISIBLE
+                    binding.profileButtonOption.isClickable = true
+                    binding.profileButtonOption.text = "User"
+                    binding.profileButtonOption.setOnClickListener {
+                        goToUser()
+                    }
+                }
 
                 Log.d(TAG, "onDataChange: ${value.toString()}")
             }
+
 
             override fun onCancelled(error: DatabaseError) {
                 Log.d(TAG, "onCancelled: Failed to read value")
             }
         })
 
+        // check if admin and enable button
 
 
 
 
-        binding.profileResetPassword.setOnClickListener {
-            resetPassword()
-        }
+
 
         binding.profileButtonDelete.setOnClickListener {
             deleteUser()
@@ -186,5 +202,15 @@ class ProfileActivity : AppCompatActivity() {
         Toast.makeText(this, "User signed out", Toast.LENGTH_SHORT)
         val loginIntent = Intent(this, LoginActivity::class.java)
         startActivity(loginIntent)
+    }
+
+    private fun goToAdmin() {
+        var intent = Intent(this, Admin::class.java)
+        startActivity(intent)
+    }
+
+    private fun goToUser() {
+        var intent = Intent(this, User::class.java)
+        startActivity(intent)
     }
 }
