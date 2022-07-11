@@ -1,36 +1,34 @@
-package com.example.checkin
-
+package com.example.checkin.ui.main
 
 import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import com.example.checkin.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 
-class MainFragment : Fragment() {
+class AdminFragment : Fragment() {
 
     companion object {
-        fun newInstance() = MainFragment()
+        fun newInstance() = AdminFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: AdminViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         setHasOptionsMenu(true)
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        return inflater.inflate(R.layout.fragment_admin, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(AdminViewModel::class.java)
         // TODO: Use the ViewModel
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -87,17 +85,5 @@ class MainFragment : Fragment() {
         }
 
     }
-
-    override fun onStart() {
-        super.onStart()
-        if(FirebaseAuth.getInstance().currentUser == null) {
-
-        }
-        else {
-
-        }
-    }
-
-
 
 }

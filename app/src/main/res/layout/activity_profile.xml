@@ -84,25 +84,6 @@
         app:layout_constraintStart_toStartOf="@+id/profile_birthday_label"
         app:layout_constraintTop_toBottomOf="@+id/profile_birthday_label" />
 
-    <TextView
-        android:id="@+id/profile_admin_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Admin:"
-        android:textSize="18sp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="@+id/profile_birthday_label"
-        app:layout_constraintTop_toBottomOf="@+id/profile_birthday_text" />
-
-    <TextView
-        android:id="@+id/profile_admin_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:layout_marginTop="5dp"
-        app:layout_constraintStart_toStartOf="@+id/profile_admin_label"
-        app:layout_constraintTop_toBottomOf="@+id/profile_admin_label" />
-
     <Button
         android:id="@+id/profile_button_delete"
         android:layout_width="200dp"
@@ -133,17 +114,19 @@
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_reset_password" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_button_admin" />
 
     <Button
-        android:id="@+id/profile_reset_password"
+        android:id="@+id/profile_button_admin"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="Reset Password"
-        android:layout_marginTop="30dp"
+        android:clickable="false"
+        android:text="Admin"
+        android:visibility="invisible"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_admin_text" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_birthday_text" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

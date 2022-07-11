@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.AdminFragment">
+
+
+    <TextView
+        android:id="@+id/admin_title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Admin Settings"
+        android:textSize="30sp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView2"
+        android:layout_width="match_parent"
+        android:layout_height="409dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/admin_title_text" />
+
+    <Button
+        android:id="@+id/check_ins"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="wrap_content"
+        android:text="See Check Ins"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mapView2" />
+
+    <Button
+        android:id="@+id/add_check_in"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="wrap_content"
+        android:text="Add Check In"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/check_ins" />
+
+    <Button
+        android:id="@+id/delete_check_in"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="wrap_content"
+        android:text="Delete Check In"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_check_in" />
+
+    <Button
+        android:id="@+id/add_form"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:text="Add Form"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delete_check_in" />
+</androidx.constraintlayout.widget.ConstraintLayout>

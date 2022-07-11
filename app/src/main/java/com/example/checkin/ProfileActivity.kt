@@ -50,22 +50,29 @@ class ProfileActivity : AppCompatActivity() {
                 binding.profileNameText.text = fullName
                 binding.profileEmailText.text = email
                 binding.profileBirthdayText.text = birthday
-                binding.profileAdminText.text = admin
+
+                // if admin enable admin button
+                if(admin.toBoolean()) {
+                    binding.profileButtonAdmin.visibility = android.view.View.VISIBLE
+                    binding.profileButtonAdmin.isClickable = true
+                }
 
                 Log.d(TAG, "onDataChange: ${value.toString()}")
             }
+
 
             override fun onCancelled(error: DatabaseError) {
                 Log.d(TAG, "onCancelled: Failed to read value")
             }
         })
 
+        // check if admin and enable button
 
 
 
 
-        binding.profileResetPassword.setOnClickListener {
-            resetPassword()
+        binding.profileButtonAdmin.setOnClickListener {
+            goToAdmin()
         }
 
         binding.profileButtonDelete.setOnClickListener {
@@ -152,6 +159,11 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun goToAdmin() {
+        var intent = Intent(this, Admin::class.java)
+        startActivity(intent)
     }
 
     private fun deleteUser() {
