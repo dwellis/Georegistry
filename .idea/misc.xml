@@ -9,15 +9,22 @@
         <entry key="..\:/Users/derek/Documents/ReactNative/AwesomeProject/CheckIn/app/src/main/res/layout/fragment_forms.xml" value="0.165" />
         <entry key="..\:/Users/derek/Documents/ReactNative/AwesomeProject/CheckIn/app/src/main/res/layout/fragment_main.xml" value="0.1" />
         <entry key="..\:/Users/derek/Documents/ReactNative/AwesomeProject/CheckIn/app/src/main/res/menu/main_menu.xml" value="0.13703703703703704" />
+        <entry key="app/src/main/res/drawable/round_corner.xml" value="0.154" />
         <entry key="app/src/main/res/layout/activity_admin.xml" value="0.14427083333333332" />
         <entry key="app/src/main/res/layout/activity_create_account.xml" value="0.26458333333333334" />
         <entry key="app/src/main/res/layout/activity_forms.xml" value="0.18802083333333333" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.11041666666666666" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/activity_manage.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_maps.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_profile.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_update_account.xml" value="0.21875" />
+        <entry key="app/src/main/res/layout/dialog_add_check_in.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_admin.xml" value="0.14427083333333332" />
+        <entry key="app/src/main/res/layout/fragment_autocomplete.xml" value="0.2359375" />
         <entry key="app/src/main/res/layout/fragment_forms.xml" value="0.18802083333333333" />
+        <entry key="app/src/main/res/layout/fragment_main.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/fragment_places_search.xml" value="0.2640625" />
         <entry key="app/src/main/res/layout/fragment_user.xml" value="0.10989583333333333" />
         <entry key="app/src/main/res/menu/main_menu.xml" value="0.11041666666666666" />
       </map>

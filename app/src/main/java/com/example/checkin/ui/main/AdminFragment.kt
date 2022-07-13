@@ -4,11 +4,19 @@ import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.*
+import androidx.databinding.DataBindingUtil.setContentView
 import androidx.fragment.app.Fragment
 import com.example.checkin.*
+import com.example.checkin.databinding.ActivityUpdateAccountBinding
+import com.example.checkin.databinding.FragmentAdminBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class AdminFragment : Fragment() {
+
+    lateinit var binding: FragmentAdminBinding
 
     companion object {
         fun newInstance() = AdminFragment()
@@ -16,11 +24,15 @@ class AdminFragment : Fragment() {
 
     private lateinit var viewModel: AdminViewModel
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
+        binding = FragmentAdminBinding.inflate(layoutInflater)
+        binding.addCheckIn.setOnClickListener {  }
         return inflater.inflate(R.layout.fragment_admin, container, false)
     }
 
