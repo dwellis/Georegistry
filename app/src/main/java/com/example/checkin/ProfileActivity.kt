@@ -205,7 +205,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun goToAdmin() {
-        var intent = Intent(this, Admin::class.java)
+        var intent = Intent(this, ManageActivity::class.java)
         startActivity(intent)
     }
 
