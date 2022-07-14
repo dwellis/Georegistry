@@ -17,6 +17,9 @@ class SplashScreen : AppCompatActivity() {
         )
 
         Handler().postDelayed({
+
+            // check to see if logged in and if so, are they an admin
+
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
