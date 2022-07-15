@@ -20,7 +20,11 @@ class SplashScreen : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var accounts : DatabaseReference
     private lateinit var account : DatabaseReference
-    var adminFlag : Boolean = false
+    private var adminFlag : Boolean = false
+
+    companion object {
+        private const val TAG = "SplashScreen"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +33,6 @@ class SplashScreen : AppCompatActivity() {
         database = Firebase.database.reference
         accounts = Firebase.database.reference.child("accounts")
         account = accounts.child(Firebase.auth.currentUser?.uid.toString())
-
-
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -48,7 +50,15 @@ class SplashScreen : AppCompatActivity() {
                 accounts.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         adminFlag = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("admin").value as Boolean
+                        Log.d(TAG, "onDataChange: ${snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("admin").value}")
 
+                        if(adminFlag) {
+                            val intent = Intent(applicationContext, RegistrarLanding::class.java)
+                            startActivity(intent)
+                        } else {
+                            val intent = Intent(applicationContext, UserLanding::class.java)
+                            startActivity(intent)
+                        }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -56,13 +66,7 @@ class SplashScreen : AppCompatActivity() {
                     }
                 })
 
-                if(adminFlag) {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                }
+
             }
 
 

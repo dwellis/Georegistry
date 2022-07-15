@@ -9,19 +9,29 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.example.checkin.databinding.ActivityLoginBinding
 import com.example.checkin.databinding.ActivityMapsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.IgnoreExtraProperties
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var binding: ActivityLoginBinding
+
+
+    private lateinit var database: DatabaseReference
+    private lateinit var accounts : DatabaseReference
+    private lateinit var account : DatabaseReference
+    // TODO: Move to system preferences
+    private var adminFlag : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +44,12 @@ class LoginActivity : AppCompatActivity() {
 
         binding.login.setOnClickListener {
             Log.d(TAG, "Login clicked")
-            signIn(binding.username.text.toString(), binding.password.text.toString())
+            if(binding.username.text.toString() != "") {
+                signIn(binding.username.text.toString(), binding.password.text.toString())
+            } else {
+                Toast.makeText(this, "please enter username and password", Toast.LENGTH_SHORT).show()
+            }
+
         }
 
         binding.loginButtonCreateAccount.setOnClickListener {
@@ -42,6 +57,8 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, CreateAccount::class.java)
             startActivity(intent)
         }
+
+
 
 //        binding.register.setOnClickListener {
 //            Log.d(TAG, "Register clicked")
@@ -172,9 +189,29 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(baseContext, "Signed In.", Toast.LENGTH_SHORT).show()
                     val user = auth.currentUser
                     updateUI(user)
-                    sendEmailVerification()
-                    var homeIntent = Intent(this, MainActivity::class.java)
-                    startActivity(homeIntent)
+                    //sendEmailVerification()
+
+                    // check if admin from db
+                    // TODO: move to system preferences
+                    database = Firebase.database.reference
+                    accounts = Firebase.database.reference.child("accounts")
+                    account = accounts.child(Firebase.auth.currentUser?.uid.toString())
+
+                    account.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if(snapshot.child("admin").value.toString().toBoolean()) {
+                                val intent = Intent(applicationContext, RegistrarLanding::class.java)
+                                startActivity(intent)
+                            } else {
+                                val intent = Intent(applicationContext, UserLanding::class.java)
+                                startActivity(intent)
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+
+                        }
+                    })
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)

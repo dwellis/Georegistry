@@ -14,9 +14,15 @@
         android:theme="@style/Theme.CheckIn"
         tools:targetApi="31">
         <activity
+            android:name=".UserLanding"
+            android:exported="false" />
+        <activity
+            android:name=".RegistrarLanding"
+            android:exported="false" />
+        <activity
             android:name=".SplashScreen"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -54,9 +60,7 @@
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".MainActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -64,9 +68,9 @@
 
         <receiver android:name=".GeofenceBroadcastReceiver" />
     </application>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
 </manifest>
