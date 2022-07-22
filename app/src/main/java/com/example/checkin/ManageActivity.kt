@@ -22,22 +22,27 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.io.FileInputStream
 import java.util.*
 
 
 class ManageActivity : AppCompatActivity() {
 
+    private lateinit var auth: FirebaseAuth
     lateinit var binding: ActivityManageBinding
     private lateinit var database: DatabaseReference
+    private lateinit var accounts: DatabaseReference
+    private lateinit var account: DatabaseReference
 
-    lateinit var d_lat : String
-    lateinit var d_long : String
-    lateinit var d_title : String
-    lateinit var d_desc : String
+
+    lateinit var id : String
+    lateinit var name : String
+    lateinit var address : String
+    lateinit var lat : String
+    lateinit var lng : String
 
     companion object {
         private const val TAG = "ManageActivity"
@@ -46,93 +51,95 @@ class ManageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        auth = Firebase.auth
+
         binding = ActivityManageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         database = Firebase.database.reference
+        accounts = Firebase.database.reference.child("accounts")
+        account = accounts.child(Firebase.auth.currentUser?.uid.toString())
 
+
+
+        val apiKey = getString(R.string.api_key)
+
+        /**
+         * Initialize Places. For simplicity, the API key is hard-coded. In a production
+         * environment we recommend using a secure mechanism to manage API keys.
+         */
+        /**
+         * Initialize Places. For simplicity, the API key is hard-coded. In a production
+         * environment we recommend using a secure mechanism to manage API keys.
+         */
+        if (!Places.isInitialized()) {
+            Places.initialize(applicationContext, apiKey)
+        }
+
+// Create a new Places client instance.
+
+// Create a new Places client instance.
+        val placesClient = Places.createClient(this)
 
 
         // Initialize the AutocompleteSupportFragment.
-//        val autocompleteFragment =
-//            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment?
-//
-//        autocompleteFragment!!.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME))
-//
-//        autocompleteFragment!!.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-//            override fun onPlaceSelected(place: Place) {
-//                // TODO: Get info about the selected place.
-//                Log.i(TAG, "Place: " + place.name + ", " + place.id)
-//            }
-//
-//            override fun onError(status: Status) {
-//                // TODO: Handle the error.
-//                Log.i(TAG, "An error occurred: $status")
-//            }
-//        })
+        val autocompleteFragment =
+            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment)
+                    as AutocompleteSupportFragment
+
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS))
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: Place) {
+                // TODO: Get info about the selected place.
+                id = place.id.toString()
+                name = place.name.toString()
+                address = place.address.toString()
+                lat = place.latLng?.latitude.toString()
+                lng = place.latLng?.longitude.toString()
+                Log.i(TAG, "Place: ${place.name}, ${place.id}, ${lat}, ${lng}")
+            }
+
+            override fun onError(status: Status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: $status")
+            }
+        })
+
+
 
 
         binding.manageButtonAddCheckIn.setOnClickListener {
 
+            val title = binding.autoCompleteTextView.text.toString()
+            val desc = binding.autoCompleteTextView2.text.toString()
 
-            val dialogBuilder = AlertDialog.Builder(this)
+            val location = Location( id, name, address, lat, lng, title, desc, true)
 
-            val ll = LinearLayout(this)
-            ll.orientation = android.widget.LinearLayout.VERTICAL
-
-            val i_lat = EditText(this)
-            i_lat.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
-            i_lat.hint = "Latitude"
-
-            val i_long = EditText(this)
-            i_long.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
-            i_long.hint = "Longitude"
-
-            val i_title = EditText(this)
-            i_title.inputType = InputType.TYPE_CLASS_TEXT
-            i_title.hint = "Title"
-
-            val i_desc = EditText(this)
-            i_desc.inputType = InputType.TYPE_CLASS_TEXT
-            i_desc.hint = "Description"
-
-
-            ll.addView(i_lat)
-            ll.addView(i_long)
-            ll.addView(i_title)
-            ll.addView(i_desc)
-
-            dialogBuilder.setView(ll)
-
-
-            dialogBuilder.setMessage("Please fill in the information below")
-                .setCancelable(false)
-                // positive button text and action
-                .setPositiveButton("Ok", DialogInterface.OnClickListener {
-                        dialog, id ->
-                    d_lat = i_lat.text.toString()
-                    d_long = i_long.text.toString()
-                    d_title = i_title.text.toString()
-                    d_desc = i_title.text.toString()
-                    Toast.makeText(this, "New Check In:\n$d_title\n$d_desc\n$d_lat, $d_long", Toast.LENGTH_SHORT).show()
-                    finish()
-                })
-                // negative button text and action
-                .setNegativeButton("Back", DialogInterface.OnClickListener {
-                        dialog, id -> dialog.cancel()
-                })
-
-            //dialogBuilder.setView(R.layout.dialog_add_check_in)
-
-
-
-            val alert = dialogBuilder.create()
-            alert.setTitle("Add a check in")
-            alert.show()
-
-            val toast = Toast.makeText(this, "Add Check In clicked", Toast.LENGTH_SHORT)
-            toast.show()
+            database.child("locations").child(auth.uid.toString()).setValue(location)
         }
+
+        // listener for current location
+        database.child("locations").child(auth.uid.toString()).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val value = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("firstName").value
+                binding.manageTitleTv.text = snapshot.child("title").value.toString()
+                binding.manageDescriptionTv.text = snapshot.child("desc").value.toString()
+                binding.manageAddressTv.text = snapshot.child("address").value.toString()
+                binding.manageActiveCheckBox.isChecked = snapshot.child("active").value.toString().toBoolean()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -188,5 +195,20 @@ class ManageActivity : AppCompatActivity() {
 
     private fun showAddCheckInDialog() {
         AddCheckIn().show(supportFragmentManager, "AddCheckIn")
+    }
+
+    @IgnoreExtraProperties
+    data class Location(
+        val ID : String? = null,
+        val name: String? = null,
+        val address : String? = null,
+        val lat: String? = null,
+        val lng: String? = null,
+        val title: String? = null,
+        val desc: String? = null,
+        val active : Boolean? = null
+    ) {
+        // Null default values create a no-argument default constructor, which is needed
+        // for deserialization from a DataSnapshot.
     }
 }

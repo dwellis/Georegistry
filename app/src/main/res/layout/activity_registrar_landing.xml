@@ -25,6 +25,7 @@
         android:text="Hello."
         android:textSize="30sp"
         android:textColor="@color/black"
+        android:fontFamily="@font/cognizant_sans"
         android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reg_landing_icon" />
@@ -39,21 +40,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/registrar_landing_welcome_text" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/registrar_landing_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registrar_landing_registers_label" />
-
     <Button
         android:id="@+id/registrar_landing_button_see_all"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/button_width"
         android:layout_height="wrap_content"
-        android:text="See All Registers"
-        android:layout_marginBottom="60dp"
+        android:text="Manage Location"
+        android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/registrar_landing_registers_label"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:id="@+id/registrar_landing_ll"
+            android:layout_width="match_parent"
+            android:layout_height="508dp"
+            android:orientation="vertical"
+            android:padding="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/registrar_landing_registers_label"></LinearLayout>
+
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

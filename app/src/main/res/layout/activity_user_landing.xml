@@ -25,6 +25,7 @@
         android:text="Welcome."
         android:textColor="@color/black"
         android:textSize="30sp"
+        android:fontFamily="@font/cognizant_sans"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_landing_icon" />
@@ -33,55 +34,30 @@
         android:id="@+id/user_landing_pending"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Below are your pending registrations"
+        android:text="Below is your subscribed location"
         android:textSize="20sp"
         android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_landing_welcome_text" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView2"
+    <LinearLayout
+        android:id="@+id/user_landing_locations_ll"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="10dp"
-        android:background="#f5f5f5"
+        android:layout_height="500dp"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_landing_pending" />
+        app:layout_constraintTop_toBottomOf="@+id/user_landing_pending">
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Subscribe to a new location"
-        android:textSize="20sp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView2" />
+    </LinearLayout>
 
-    <SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/user_landing_button_seeAll"
+        android:layout_width="190dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Subscribed Locations"
-        android:textSize="20sp"
-        android:layout_marginTop="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#f5f5f5"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+        android:text="See All Locations"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_landing_locations_ll" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

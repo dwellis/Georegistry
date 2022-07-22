@@ -1,13 +1,21 @@
 package com.example.checkin
 
+import android.app.NotificationManager
 import android.content.Intent
+import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import com.example.checkin.databinding.ActivityProfileBinding
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.view.marginRight
+import androidx.core.view.marginTop
 import com.example.checkin.databinding.ActivityRegistrarLandingBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -24,6 +32,7 @@ class RegistrarLanding : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var accounts : DatabaseReference
     private lateinit var account : DatabaseReference
+    private  lateinit var registers : DatabaseReference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,9 +40,12 @@ class RegistrarLanding : AppCompatActivity() {
         database = Firebase.database.reference
         accounts = Firebase.database.reference.child("accounts")
         account = accounts.child(Firebase.auth.currentUser?.uid.toString())
+        registers = account.child("registers")
 
         binding = ActivityRegistrarLandingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        var prevChildCount = 0L
 
         account.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -47,6 +59,106 @@ class RegistrarLanding : AppCompatActivity() {
             }
         })
 
+
+
+        binding.registrarLandingButtonSeeAll.setOnClickListener {
+            val intent = Intent(this, ManageActivity::class.java)
+            startActivity(intent)
+        }
+
+        accounts.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val childs = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("registers").childrenCount
+                val registers = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("registers")
+
+
+                if(childs > prevChildCount) {
+                    //send notification
+                    val notificationManager = ContextCompat.getSystemService(
+                        applicationContext,
+                        NotificationManager::class.java
+                    ) as NotificationManager
+
+                    notificationManager.sendGeofenceEnteredAdminNotification(applicationContext)
+                }
+
+                Log.d(TAG, "onDataChange: $childs")
+                if(registers.hasChildren()) {
+                    registers.children.forEach {
+
+                        val subscriberID = it.key.toString()
+                        val isFormComplete = it.child("isFormComplete").value.toString().toBoolean()
+
+
+                        val name = it.child("name").value.toString()
+                        val birthday = it.child("birthday").value.toString()
+
+                        val tvName = TextView(applicationContext)
+                        tvName.text = name
+
+                        val tvBirthday = TextView(applicationContext)
+                        tvBirthday.text = birthday
+
+                        val isFormCompleted = CheckBox(applicationContext)
+                        isFormCompleted.isChecked = isFormComplete
+                        isFormCompleted.isClickable = false
+
+//                        val delete = Button(applicationContext)
+//                        delete.text = "Delete"
+//
+//                        delete.setOnClickListener {
+//
+//
+//                        }
+
+                        val seeDetails = Button(applicationContext)
+                        seeDetails.text = "See Information"
+
+                        seeDetails.setOnClickListener {
+                            val intent = Intent(applicationContext, SeeInfo::class.java)
+                            intent.putExtra("UID", subscriberID)
+                            startActivity(intent)
+                        }
+
+                        tvName.setPadding(0, 100, 0, 0)
+                        tvName.textSize = 20f
+                        isFormCompleted.text = "Form Completed"
+
+
+
+                        binding.registrarLandingLl.addView(tvName)
+                        binding.registrarLandingLl.addView(tvBirthday)
+                        binding.registrarLandingLl.addView(isFormCompleted)
+
+                        if(isFormComplete) {
+                            binding.registrarLandingLl.addView(seeDetails)
+                        }
+
+                        //binding.registrarLandingLl.addView(delete)
+
+
+                            Log.d(TAG, "onDataChange: $subscriberID")
+
+
+                    }
+                }
+
+                prevChildCount = snapshot.childrenCount
+
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                val noneTv = TextView(applicationContext)
+                noneTv.text = "No current registers"
+                binding.registrarLandingLl.addView(noneTv)
+            }
+        })
+
+    }
+
+    private fun deleteRegister(uid: String) {
+        registers.child(uid).removeValue()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -106,5 +218,9 @@ class RegistrarLanding : AppCompatActivity() {
                 else -> super.onOptionsItemSelected(item)
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "RegistrarLanding"
     }
 }

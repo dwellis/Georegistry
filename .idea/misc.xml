@@ -12,24 +12,29 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.269" />
         <entry key="app/src/main/res/drawable/round_corner.xml" value="0.154" />
         <entry key="app/src/main/res/layout/activity_admin.xml" value="0.14427083333333332" />
+        <entry key="app/src/main/res/layout/activity_all_locations.xml" value="0.278125" />
         <entry key="app/src/main/res/layout/activity_create_account.xml" value="0.26458333333333334" />
         <entry key="app/src/main/res/layout/activity_forms.xml" value="0.18802083333333333" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.21822916666666667" />
-        <entry key="app/src/main/res/layout/activity_manage.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_manage.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_maps.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_profile.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_registrar_landing.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_see_info.xml" value="0.22291666666666668" />
         <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.21822916666666667" />
         <entry key="app/src/main/res/layout/activity_update_account.xml" value="0.21875" />
+        <entry key="app/src/main/res/layout/activity_user.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/activity_user_form.xml" value="0.24947916666666667" />
         <entry key="app/src/main/res/layout/activity_user_landing.xml" value="0.2640625" />
         <entry key="app/src/main/res/layout/dialog_add_check_in.xml" value="0.375" />
-        <entry key="app/src/main/res/layout/fragment_admin.xml" value="0.14427083333333332" />
+        <entry key="app/src/main/res/layout/fragment_admin.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_autocomplete.xml" value="0.2359375" />
-        <entry key="app/src/main/res/layout/fragment_forms.xml" value="0.18802083333333333" />
+        <entry key="app/src/main/res/layout/fragment_forms.xml" value="0.13828125" />
         <entry key="app/src/main/res/layout/fragment_main.xml" value="0.21822916666666667" />
         <entry key="app/src/main/res/layout/fragment_places_search.xml" value="0.2640625" />
         <entry key="app/src/main/res/layout/fragment_user.xml" value="0.10989583333333333" />
+        <entry key="app/src/main/res/layout/location.xml" value="0.27708333333333335" />
         <entry key="app/src/main/res/menu/main_menu.xml" value="0.25" />
       </map>
     </option>
