@@ -83,8 +83,6 @@ class UserLanding : AppCompatActivity() {
         lat = "0"
         lng = "0"
 
-        var userActive = false
-
         geofencingClient = LocationServices.getGeofencingClient(this)
 
 
@@ -112,7 +110,7 @@ class UserLanding : AppCompatActivity() {
                 Log.d(TAG, "onDataChange: ${snapshot.childrenCount}")
                 if(snapshot.hasChildren()) {
                     snapshot.children.forEach {
-                        if(it.key.toString() == subscribedID!!) {
+                        if(it.key.toString() == subscribedID) {
 
                             lat = it.child("lat").value.toString()
                             lng = it.child("lng").value.toString()
@@ -144,7 +142,7 @@ class UserLanding : AppCompatActivity() {
                     }
                 }
 
-                val tv = TextView(applicationContext)
+
 
             }
 
@@ -183,22 +181,7 @@ class UserLanding : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(FirebaseAuth.getInstance().currentUser == null) {
-            return when(item.itemId) {
-                R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, UserLanding::class.java)
-                    startActivity(homeIntent)
-                    true
-                }
-                R.id.main_menu_profile -> {
-                    var loginIntent = Intent(this, LoginActivity::class.java)
-                    startActivity(loginIntent)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
-        }
-        else {
+
             return when(item.itemId) {
                 R.id.main_menu_home -> {
                     var homeIntent = Intent(this, UserLanding::class.java)
@@ -212,7 +195,7 @@ class UserLanding : AppCompatActivity() {
                 }
                 else -> super.onOptionsItemSelected(item)
             }
-        }
+
     }
 
     override fun onRequestPermissionsResult(
@@ -333,9 +316,9 @@ class UserLanding : AppCompatActivity() {
             .addGeofence(geofence)
             .build()
 
-        geofencingClient.removeGeofences(geofencePendingIntent)?.run {
+        geofencingClient.removeGeofences(geofencePendingIntent).run {
             addOnCompleteListener {
-                geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
+                geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
                     addOnSuccessListener {
                         Toast.makeText(this@UserLanding, "Geofences Added",
                             Toast.LENGTH_SHORT)
