@@ -1,4 +1,4 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.example.checkin.R
 import com.example.checkin.databinding.ActivityManageBinding
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
@@ -19,7 +20,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.util.*
 
 
 class ManageActivity : AppCompatActivity() {

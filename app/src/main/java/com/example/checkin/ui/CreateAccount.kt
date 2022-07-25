@@ -1,4 +1,4 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,8 +8,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import com.example.checkin.R
 import com.example.checkin.databinding.ActivityCreateAccountBinding
-import com.example.checkin.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
@@ -39,7 +39,7 @@ class CreateAccount : AppCompatActivity() {
         database = Firebase.database.reference
 
         binding.buttonUpdate.setOnClickListener {
-            Log.d(CreateAccount.TAG, "Register clicked")
+            Log.d(TAG, "Register clicked")
             createAccount(binding.createAccountEmailInput.text.toString(), binding.createAccountPasswordInput.text.toString())
 
         }
@@ -90,7 +90,7 @@ class CreateAccount : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(CreateAccount.TAG, "createUserWithEmail:success")
+                    Log.d(TAG, "createUserWithEmail:success")
                     val user = auth.currentUser
 
                     Toast.makeText(this, "User created", Toast.LENGTH_SHORT)
@@ -109,7 +109,7 @@ class CreateAccount : AppCompatActivity() {
                     startActivity(intent)
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(CreateAccount.TAG, "createUserWithEmail:failure", task.exception)
+                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
                     Toast.makeText(baseContext, "Please fill in every box.",
                         Toast.LENGTH_SHORT).show()
 

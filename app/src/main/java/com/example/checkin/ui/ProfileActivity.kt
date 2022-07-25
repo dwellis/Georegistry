@@ -1,4 +1,4 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import com.example.checkin.R
 import com.example.checkin.databinding.ActivityProfileBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -138,7 +139,7 @@ class ProfileActivity : AppCompatActivity() {
             val emailAddress = Firebase.auth.currentUser!!.email.toString()
             Firebase.auth.sendPasswordResetEmail(emailAddress).addOnCompleteListener { task ->
                 if(task.isSuccessful) {
-                    Log.d(ProfileActivity.TAG, "Password reset email sent")
+                    Log.d(TAG, "Password reset email sent")
                     Toast.makeText(this,"Password reset email sent", Toast.LENGTH_SHORT )
                 }
             }

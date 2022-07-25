@@ -1,7 +1,6 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 import android.Manifest
-import android.annotation.TargetApi
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentSender
@@ -17,15 +16,16 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
-import androidx.core.view.marginTop
 import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProviders
+import com.example.checkin.BuildConfig
+import com.example.checkin.R
+import com.example.checkin.createChannel
 import com.example.checkin.databinding.ActivityUserLandingBinding
+import com.example.checkin.utils.GeofenceBroadcastReceiver
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -52,7 +52,6 @@ class UserLanding : AppCompatActivity() {
     lateinit var lat :String
     lateinit var lng :String
 
-    private lateinit var viewModel: GeofenceViewModel
 
 
     private val geofencePendingIntent: PendingIntent by lazy {
@@ -68,9 +67,7 @@ class UserLanding : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this, SavedStateViewModelFactory(this.application,
-            this)
-        ).get(GeofenceViewModel::class.java)
+
         geofencingClient = LocationServices.getGeofencingClient(this)
 
         // Create channel for notifications
@@ -299,7 +296,8 @@ class UserLanding : AppCompatActivity() {
             if (exception is ResolvableApiException && resolve){
                 try {
                     exception.startResolutionForResult(this@UserLanding,
-                        REQUEST_TURN_DEVICE_LOCATION_ON)
+                        REQUEST_TURN_DEVICE_LOCATION_ON
+                    )
                 } catch (sendEx: IntentSender.SendIntentException) {
                     Log.d(TAG, "Error getting location settings resolution: " + sendEx.message)
                 }

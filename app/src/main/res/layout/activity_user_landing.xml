@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="15dp"
     android:paddingRight="15dp"
-    tools:context=".UserLanding">
+    tools:context=".ui.UserLanding">
 
     <ImageView
         android:id="@+id/user_landing_icon"

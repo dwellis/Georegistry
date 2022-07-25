@@ -1,11 +1,10 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.example.checkin.databinding.ActivityUserFormBinding
-import com.example.checkin.databinding.ActivityUserLandingBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

@@ -1,11 +1,10 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.checkin.databinding.ActivityAllLocationsBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot

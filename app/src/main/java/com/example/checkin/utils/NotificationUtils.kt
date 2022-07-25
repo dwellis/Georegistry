@@ -9,7 +9,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.google.firebase.ktx.Firebase
+import com.example.checkin.ui.RegistrarLanding
+import com.example.checkin.ui.UserForm
 
 
 private const val NOTIFICATION_ID = 33

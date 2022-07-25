@@ -1,4 +1,4 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,8 +7,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import com.example.checkin.R
 import com.example.checkin.databinding.ActivityUpdateAccountBinding
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -68,11 +68,11 @@ class UpdateAccount : AppCompatActivity() {
                 binding.createAccountAdminCheckbox.isChecked = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("admin").value.toString().toBoolean()
 
 
-                Log.d(UpdateAccount.TAG, "onDataChange: ${value.toString()}")
+                Log.d(TAG, "onDataChange: ${value.toString()}")
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.d(UpdateAccount.TAG, "onCancelled: Failed to read value")
+                Log.d(TAG, "onCancelled: Failed to read value")
             }
         })
     }

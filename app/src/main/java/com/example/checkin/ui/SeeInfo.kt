@@ -1,12 +1,10 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import androidx.databinding.adapters.ToolbarBindingAdapter
 import com.example.checkin.databinding.ActivitySeeInfoBinding
-import com.example.checkin.databinding.ActivityUserLandingBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

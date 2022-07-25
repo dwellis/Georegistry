@@ -1,4 +1,4 @@
-package com.example.checkin
+package com.example.checkin.utils
 
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat
+import com.example.checkin.sendGeofenceEnteredNotification
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.google.firebase.auth.ktx.auth
@@ -60,7 +61,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         val geofencingEvent = GeofencingEvent.fromIntent(intent!!)
         val geofenceTransition = geofencingEvent?.geofenceTransition
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
-            Log.d(Companion.TAG, "Geofence entered")
+            Log.d(TAG, "Geofence entered")
 
 
             val notificationManager = ContextCompat.getSystemService(

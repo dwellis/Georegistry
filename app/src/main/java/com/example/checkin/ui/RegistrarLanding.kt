@@ -1,12 +1,10 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 import android.app.NotificationManager
 import android.content.Intent
-import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -14,10 +12,9 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginRight
-import androidx.core.view.marginTop
+import com.example.checkin.R
 import com.example.checkin.databinding.ActivityRegistrarLandingBinding
-import com.google.firebase.auth.FirebaseAuth
+import com.example.checkin.sendGeofenceEnteredAdminNotification
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
