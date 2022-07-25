@@ -189,20 +189,10 @@ class UserLanding : AppCompatActivity() {
         if(FirebaseAuth.getInstance().currentUser == null) {
             return when(item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
+                    var homeIntent = Intent(this, UserLanding::class.java)
                     startActivity(homeIntent)
                     true
                 }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
                 R.id.main_menu_profile -> {
                     var loginIntent = Intent(this, LoginActivity::class.java)
                     startActivity(loginIntent)
@@ -214,20 +204,10 @@ class UserLanding : AppCompatActivity() {
         else {
             return when(item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
+                    var homeIntent = Intent(this, UserLanding::class.java)
                     startActivity(homeIntent)
                     true
                 }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
                 R.id.main_menu_profile -> {
                     var profileIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(profileIntent)

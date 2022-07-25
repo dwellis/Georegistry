@@ -41,12 +41,7 @@
         <activity
             android:name=".ManageActivity"
             android:exported="false" />
-        <activity
-            android:name=".User"
-            android:exported="false" />
-        <activity
-            android:name=".Admin"
-            android:exported="false" />
+
         <activity
             android:name=".UpdateAccount"
             android:exported="false" />
@@ -59,17 +54,7 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
-        <activity
-            android:name=".MapsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_maps" />
-        <activity
-            android:name=".FormsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_maps" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

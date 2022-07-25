@@ -87,20 +87,10 @@ class LoginActivity : AppCompatActivity() {
         if(FirebaseAuth.getInstance().currentUser == null) {
             return when(item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
+                    var homeIntent = Intent(this, LoginActivity::class.java)
                     startActivity(homeIntent)
                     true
                 }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
                 R.id.main_menu_profile -> {
                     var loginIntent = Intent(this, LoginActivity::class.java)
                     startActivity(loginIntent)
@@ -112,20 +102,10 @@ class LoginActivity : AppCompatActivity() {
         else {
             return when(item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
+                    var homeIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(homeIntent)
                     true
                 }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
                 R.id.main_menu_profile -> {
                     var profileIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(profileIntent)
@@ -135,49 +115,6 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-
-
-//    private fun createAccount(email: String, password: String) {
-//        // [START create_user_with_email]
-//        auth.createUserWithEmailAndPassword(email, password)
-//            .addOnCompleteListener(this) { task ->
-//                if (task.isSuccessful) {
-//                    // Sign in success, update UI with the signed-in user's information
-//                    Log.d(TAG, "createUserWithEmail:success")
-//                    val user = auth.currentUser
-//                    updateUI(user)
-//                    var homeIntent = Intent(this, MainActivity::class.java)
-//                    startActivity(homeIntent)
-//                } else {
-//                    // If sign in fails, display a message to the user.
-//                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
-//                    Toast.makeText(baseContext, "Authentication failed.",
-//                        Toast.LENGTH_SHORT).show()
-//                    updateUI(null)
-//                }
-//            }
-//        // [END create_user_with_email]
-//    }
-
-//    private  fun createAccountData(
-//        UID : String,
-//        birthday: String?,
-//        firstName: String?,
-//        lastName: String?,
-//        email: String) {
-//        val account = LoginActivity.UserAccount(auth.currentUser?.uid.toString(), )
-//    }
-//
-//    fun writeNewCheckIn(checkInId : String, birthday: String?, firstName: String?, lastName: String?) {
-//        val checkIn = FormsFragment.CheckIn(birthday, firstName, lastName)
-//        database.child("checkIns").child(checkInId).setValue(checkIn)
-//    }
-//
-//    @IgnoreExtraProperties
-//    data class UserAccount(val UID : String? = null, val birthday: String? = null, val firstName: String? = null, val lastName: String? = null, val email : String? = null) {
-//        // Null default values create a no-argument default constructor, which is needed
-//        // for deserialization from a DataSnapshot.
-//    }
 
     private fun signIn(email: String, password: String) {
         // [START sign_in_with_email]

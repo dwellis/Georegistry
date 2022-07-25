@@ -84,45 +84,21 @@ class UpdateAccount : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(FirebaseAuth.getInstance().currentUser == null) {
+
             return when(item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
+                    var homeIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(homeIntent)
                     true
                 }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
                 R.id.main_menu_profile -> {
-                    var loginIntent = Intent(this, LoginActivity::class.java)
+                    var loginIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(loginIntent)
                     true
                 }
                 else -> super.onOptionsItemSelected(item)
             }
-        }
-        else {
-            return when(item.itemId) {
-                R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
-                    startActivity(homeIntent)
-                    true
-                }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-                R.id.main_menu_profile -> {
-                    var profileIntent = Intent(this, ProfileActivity::class.java)
-                    startActivity(profileIntent)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
-        }
+
+
     }
 }

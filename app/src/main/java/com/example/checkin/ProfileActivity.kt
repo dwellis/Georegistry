@@ -24,6 +24,8 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
     private lateinit var database: DatabaseReference
 
+    private lateinit var admin : String
+
     companion object {
         private const val TAG = "ProfileActivity"
     }
@@ -36,6 +38,9 @@ class ProfileActivity : AppCompatActivity() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // setting admin so it won't throw null error
+        admin = ""
+
 
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -44,7 +49,9 @@ class ProfileActivity : AppCompatActivity() {
                 val fullName = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("firstName").value.toString() + " " + snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("lastName").value.toString()
                 val email = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("email").value.toString()
                 val birthday = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("birthday").value.toString()
-                val admin = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("admin").value.toString()
+                admin = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("admin").value.toString()
+
+
 
                 binding.profileWelcome.text = welcomeText
                 binding.profileNameText.text = fullName
@@ -55,16 +62,9 @@ class ProfileActivity : AppCompatActivity() {
                 if(admin.toBoolean()) {
                     binding.profileButtonOption.visibility = android.view.View.VISIBLE
                     binding.profileButtonOption.isClickable = true
-                    binding.profileButtonOption.text = "Admin"
+                    binding.profileButtonOption.text = "Manage"
                     binding.profileButtonOption.setOnClickListener {
                         goToAdmin()
-                    }
-                } else {
-                    binding.profileButtonOption.visibility = android.view.View.VISIBLE
-                    binding.profileButtonOption.isClickable = true
-                    binding.profileButtonOption.text = "User"
-                    binding.profileButtonOption.setOnClickListener {
-                        goToUser()
                     }
                 }
 
@@ -106,48 +106,27 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(FirebaseAuth.getInstance().currentUser == null) {
-            return when(item.itemId) {
+        if(admin.toBoolean()) {
+            return when (item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
+                    var homeIntent = Intent(this, RegistrarLanding::class.java)
                     startActivity(homeIntent)
                     true
                 }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
                 R.id.main_menu_profile -> {
-                    var loginIntent = Intent(this, LoginActivity::class.java)
-                    startActivity(loginIntent)
+                    var profileIntent = Intent(this, ProfileActivity::class.java)
+                    startActivity(profileIntent)
                     true
                 }
                 else -> super.onOptionsItemSelected(item)
             }
-        }
-        else {
-            return when(item.itemId) {
+        } else {
+            return when (item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
+                    var homeIntent = Intent(this, UserLanding::class.java)
                     startActivity(homeIntent)
                     true
                 }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
                 R.id.main_menu_profile -> {
                     var profileIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(profileIntent)
@@ -209,8 +188,5 @@ class ProfileActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun goToUser() {
-        var intent = Intent(this, User::class.java)
-        startActivity(intent)
-    }
+
 }

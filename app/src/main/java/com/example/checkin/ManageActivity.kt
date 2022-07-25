@@ -1,21 +1,14 @@
 package com.example.checkin
 
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.checkin.databinding.ActivityManageBinding
-import com.example.checkin.ui.dialogs.AddCheckIn
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -151,36 +144,11 @@ class ManageActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(FirebaseAuth.getInstance().currentUser == null) {
+
             return when(item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
+                    var homeIntent = Intent(this, RegistrarLanding::class.java)
                     startActivity(homeIntent)
-                    true
-                }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-                R.id.main_menu_profile -> {
-                    var loginIntent = Intent(this, LoginActivity::class.java)
-                    startActivity(loginIntent)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
-        }
-        else {
-            return when(item.itemId) {
-                R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
-                    startActivity(homeIntent)
-                    true
-                }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
                     true
                 }
                 R.id.main_menu_profile -> {
@@ -190,12 +158,10 @@ class ManageActivity : AppCompatActivity() {
                 }
                 else -> super.onOptionsItemSelected(item)
             }
-        }
+
     }
 
-    private fun showAddCheckInDialog() {
-        AddCheckIn().show(supportFragmentManager, "AddCheckIn")
-    }
+
 
     @IgnoreExtraProperties
     data class Location(
