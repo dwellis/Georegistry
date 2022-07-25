@@ -18,19 +18,21 @@ import com.google.firebase.ktx.Firebase
 
 class SplashScreen : AppCompatActivity() {
 
+    // references for intants of the db
     private lateinit var database: DatabaseReference
     private lateinit var accounts : DatabaseReference
     private lateinit var account : DatabaseReference
+
+    // a flag for setting later while reading from db
     private var adminFlag : Boolean = false
 
-    companion object {
-        private const val TAG = "SplashScreen"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
+        // get db references for later access
+        // laid out this way for better visualization
         database = Firebase.database.reference
         accounts = Firebase.database.reference.child("accounts")
         account = accounts.child(Firebase.auth.currentUser?.uid.toString())
@@ -44,15 +46,21 @@ class SplashScreen : AppCompatActivity() {
 
             // check to see if logged in and if so, are they an admin
             if(FirebaseAuth.getInstance().currentUser == null) {
+
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
+
             } else {
 
-                accounts.addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        adminFlag = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("admin").value.toString().toBoolean()
-                        Log.d(TAG, "onDataChange: ${snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("admin").value}")
+                // add a listener to the accounts list
+                account.addValueEventListener(object : ValueEventListener {
 
+                    override fun onDataChange(snapshot: DataSnapshot) {
+
+                        // set admin flag
+                        adminFlag = snapshot.child("admin").value.toString().toBoolean()
+
+                        // checks for landing page option
                         if(adminFlag) {
                             val intent = Intent(applicationContext, RegistrarLanding::class.java)
                             startActivity(intent)
@@ -65,14 +73,14 @@ class SplashScreen : AppCompatActivity() {
                     override fun onCancelled(error: DatabaseError) {
 
                     }
+
                 })
-
-
             }
-
-
-
             finish()
-        }, 3000)
+        }, 1000)
+    }
+
+    companion object {
+        private const val TAG = "SplashScreen"
     }
 }
