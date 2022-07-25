@@ -11,7 +11,6 @@ import android.widget.Toast
 import com.example.checkin.R
 import com.example.checkin.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
@@ -22,29 +21,26 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var binding: ActivityLoginBinding
 
-
-    private lateinit var database: DatabaseReference
-    private lateinit var accounts : DatabaseReference
+    // db references
     private lateinit var account : DatabaseReference
-    // TODO: Move to system preferences
+
+    // flag for redirecting if admin
     private var adminFlag : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
+
         // Initialize Firebase Auth
         auth = Firebase.auth
 
+        // set button clicks for activity
         binding.login.setOnClickListener {
-            Log.d(TAG, "Login clicked")
-            if(binding.username.text.toString() != "") {
+
                 signIn(binding.username.text.toString(), binding.password.text.toString())
-            } else {
-                Toast.makeText(this, "please enter username and password", Toast.LENGTH_SHORT).show()
-            }
 
         }
 
@@ -52,24 +48,6 @@ class LoginActivity : AppCompatActivity() {
             Log.d(TAG, "Create account clicked")
             val intent = Intent(this, CreateAccount::class.java)
             startActivity(intent)
-        }
-
-
-
-//        binding.register.setOnClickListener {
-//            Log.d(TAG, "Register clicked")
-////            createAccount(binding.username.text.toString(), binding.password.text.toString())
-//            val createIntent = Intent(this, CreateAccount::class.java)
-//            startActivity(createIntent)
-//        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        if(currentUser != null){
-            reload();
         }
     }
 
@@ -117,18 +95,16 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithEmail:success")
-                    Toast.makeText(baseContext, "Signed In.", Toast.LENGTH_SHORT).show()
-                    val user = auth.currentUser
-                    updateUI(user)
-                    //sendEmailVerification()
 
-                    // check if admin from db
-                    // TODO: move to system preferences
-                    database = Firebase.database.reference
-                    accounts = Firebase.database.reference.child("accounts")
-                    account = accounts.child(Firebase.auth.currentUser?.uid.toString())
+                    // Sign in success
+                    Toast.makeText(baseContext, "Signed In.", Toast.LENGTH_SHORT).show()
+
+                    // TODO: update email verification
+                    sendEmailVerification()
+
+
+                    // get account to check admin flag
+                    account = Firebase.database.reference.child("accounts").child(Firebase.auth.currentUser?.uid.toString())
 
                     account.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
@@ -148,9 +124,7 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
-                    updateUI(null)
+                    Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
                 }
             }
         // [END sign_in_with_email]
@@ -164,14 +138,6 @@ class LoginActivity : AppCompatActivity() {
                 // Email Verification sent
             }
         // [END send_email_verification]
-    }
-
-    private fun updateUI(user: FirebaseUser?) {
-
-    }
-
-    private fun reload() {
-
     }
 
     companion object {
