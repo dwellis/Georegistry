@@ -13,10 +13,13 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
+import androidx.core.view.marginTop
 import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProviders
 import com.example.checkin.databinding.ActivityUserLandingBinding
@@ -117,9 +120,27 @@ class UserLanding : AppCompatActivity() {
                             lat = it.child("lat").value.toString()
                             lng = it.child("lng").value.toString()
 
-                            val tv = TextView(applicationContext)
-                            tv.text = it.child("title").value.toString()
-                            binding.userLandingLocationsLl.addView(tv)
+                            val tvTitle = TextView(applicationContext)
+                            tvTitle.text = it.child("title").value.toString()
+                            tvTitle.textSize = 18f
+                            tvTitle.setPadding(0, 60, 0, 0)
+
+                            val tvAddress = TextView(applicationContext)
+                            tvAddress.text = it.child("address").value.toString()
+                            tvAddress.textSize = 16f
+                            tvAddress.setPadding(0, 10, 0, 20)
+
+                            val butUnsubscribe = Button(applicationContext)
+                            butUnsubscribe.text = "Unsubscribe"
+                            butUnsubscribe.setOnClickListener {
+                                account.child("subscribed").removeValue()
+                            }
+
+
+                            binding.userLandingLocationsLl.addView(tvTitle)
+                            binding.userLandingLocationsLl.addView(tvAddress)
+                            binding.userLandingLocationsLl.addView(butUnsubscribe)
+
                             Log.d(TAG, "onDataChange: ${it.child("title").value.toString()}")
                         }
 
