@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.google.firebase.ktx.Firebase
 
 
 private const val NOTIFICATION_ID = 33
@@ -46,16 +47,16 @@ fun createChannel(context: Context) {
  * with the LANDMARK_DATA from GeofencingConstatns in the GeofenceUtils file.
  */
 fun NotificationManager.sendGeofenceEnteredNotification(context: Context) {
-    val contentIntent = Intent(context, MapsActivity::class.java)
+    val contentIntent = Intent(context, UserForm::class.java)
     val contentPendingIntent = PendingIntent.getActivity(
         context,
         NOTIFICATION_ID,
         contentIntent,
-        PendingIntent.FLAG_UPDATE_CURRENT
+        PendingIntent.FLAG_MUTABLE
     )
     val mapImage = BitmapFactory.decodeResource(
         context.resources,
-        R.drawable.heart
+        R.drawable.globe_logo_black
     )
     val bigPicStyle = NotificationCompat.BigPictureStyle()
         .bigPicture(mapImage)
@@ -65,10 +66,40 @@ fun NotificationManager.sendGeofenceEnteredNotification(context: Context) {
     // a custom message when a Geofence triggers.
     val builder = NotificationCompat.Builder(context, CHANNEL_ID)
         .setContentTitle(context.getString(R.string.app_name))
-        .setContentText("You have entered a location! Check your device.")
+        .setContentText("You have registered at a location. Please fill out this form.")
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setContentIntent(contentPendingIntent)
-        .setSmallIcon(R.drawable.heart)
+        .setSmallIcon(R.drawable.globe_logo_black)
+        .setStyle(bigPicStyle)
+        .setLargeIcon(mapImage)
+
+    notify(NOTIFICATION_ID, builder.build())
+}
+
+fun NotificationManager.sendGeofenceEnteredAdminNotification(context: Context) {
+    val contentIntent = Intent(context, RegistrarLanding::class.java)
+    val contentPendingIntent = PendingIntent.getActivity(
+        context,
+        NOTIFICATION_ID,
+        contentIntent,
+        PendingIntent.FLAG_MUTABLE
+    )
+    val mapImage = BitmapFactory.decodeResource(
+        context.resources,
+        R.drawable.globe_logo_black
+    )
+    val bigPicStyle = NotificationCompat.BigPictureStyle()
+        .bigPicture(mapImage)
+        .bigLargeIcon(null)
+
+    // We use the name resource ID from the LANDMARK_DATA along with content_text to create
+    // a custom message when a Geofence triggers.
+    val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+        .setContentTitle(context.getString(R.string.app_name))
+        .setContentText("You have a new register")
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setContentIntent(contentPendingIntent)
+        .setSmallIcon(R.drawable.globe_logo_black)
         .setStyle(bigPicStyle)
         .setLargeIcon(mapImage)
 

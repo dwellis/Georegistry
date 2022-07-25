@@ -49,7 +49,7 @@ class SplashScreen : AppCompatActivity() {
 
                 accounts.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        adminFlag = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("admin").value as Boolean
+                        adminFlag = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("admin").value.toString().toBoolean()
                         Log.d(TAG, "onDataChange: ${snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("admin").value}")
 
                         if(adminFlag) {
