@@ -7,6 +7,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.example.checkin.sendGeofenceEnteredNotification
+import com.example.checkin.ui.binding
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.google.firebase.auth.ktx.auth
@@ -34,12 +35,12 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         locations = database.child("locations")
 
         var subscribedID = ""
+        var isRegistered = false
 
         // get data snapshot
         account.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 subscribedID = snapshot.child("subscribed").value.toString()
-                Log.d(TAG, "onDataChange: subscibed is $subscribedID")
 
                 accounts.child(subscribedID).child("registers").child(Firebase.auth.uid.toString()).child("name").setValue(
                     snapshot.child("firstName").value.toString() + " " + snapshot.child("lastName").value.toString()
@@ -51,10 +52,12 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                     false
                 )
 
+                isRegistered = snapshot.child("registered").value.toString().toBoolean()
+
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+
             }
         })
 
@@ -62,14 +65,22 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         val geofenceTransition = geofencingEvent?.geofenceTransition
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
             Log.d(TAG, "Geofence entered")
+            if(isRegistered) {
 
+            } else {
+                account.child("registered").setValue(true)
 
-            val notificationManager = ContextCompat.getSystemService(
-                context!!,
-                NotificationManager::class.java
-            ) as NotificationManager
+                val notificationManager = ContextCompat.getSystemService(
+                    context!!,
+                    NotificationManager::class.java
+                ) as NotificationManager
 
-            notificationManager.sendGeofenceEnteredNotification(context)
+                notificationManager.sendGeofenceEnteredNotification(context)
+
+            }
+        }
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+            Log.d(TAG, "Geofence exited")
 
         }
     }

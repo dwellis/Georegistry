@@ -1,20 +1,24 @@
 package com.example.checkin.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.SavedStateViewModelFactory
@@ -35,74 +39,80 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
+@RequiresApi(Build.VERSION_CODES.S)
 class UserLanding : AppCompatActivity() {
 
+    private lateinit var auth :FirebaseAuth
     private lateinit var binding :ActivityUserLandingBinding
+
+    // db references
     private lateinit var database :DatabaseReference
     private lateinit var accounts :DatabaseReference
     private lateinit var account :DatabaseReference
     private lateinit var locations :DatabaseReference
 
+    // set up for geofencing
     lateinit var geofencingClient :GeofencingClient
 
-
-    private lateinit var auth :FirebaseAuth
-
+    // for easy access to changed values
     lateinit var subscribedID :String
     lateinit var lat :String
     lateinit var lng :String
 
-
-
+    // creates the pending intent for geofence transitions handled by the broadcast receiver
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(this, GeofenceBroadcastReceiver::class.java)
         PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_MUTABLE)
     }
 
-    
-    companion object {
-        private const val TAG = "UserLanding"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        geofencingClient = LocationServices.getGeofencingClient(this)
-
-        // Create channel for notifications
-        createChannel(this )
+        binding = ActivityUserLandingBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         auth = Firebase.auth
 
+        // get database references
         database = Firebase.database.reference
         accounts = Firebase.database.reference.child("accounts")
         account = accounts.child(Firebase.auth.currentUser?.uid.toString())
         locations = database.child("locations")
 
-        lat = "0"
-        lng = "0"
-
+        // create geofencing client
         geofencingClient = LocationServices.getGeofencingClient(this)
 
+        // create channel for notifications
+        createChannel(this )
 
-        binding = ActivityUserLandingBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        // to avoid not initialized error
+        lat = "0"
+        lng = "0"
+        var isRegistered = false
 
         account.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 subscribedID = snapshot.child("subscribed").value.toString()
-                Log.d(TAG, "onDataChange: subscribed string: $subscribedID")
 
                 if(snapshot.child("firstName").value != null) {
-                    binding.userLandingWelcomeText.text = "Welcome, ${snapshot.child("firstName").value.toString()}"
+                    val welcomeText = "Welcome, " + snapshot.child("firstName").value.toString()
+                    binding.userLandingWelcomeText.text = welcomeText
+                }
+
+                isRegistered = account.child("registered").toString().toBoolean()
+                if(isRegistered) {
+                    binding.userLandingIsRegistered.isChecked = true
+                    binding.userLandingButtonForm.visibility = View.VISIBLE
+                    binding.userLandingButtonForm.isClickable = true
+
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
 
             }
+
         })
         
         locations.addValueEventListener(object : ValueEventListener {
@@ -115,51 +125,33 @@ class UserLanding : AppCompatActivity() {
                             lat = it.child("lat").value.toString()
                             lng = it.child("lng").value.toString()
 
-                            val tvTitle = TextView(applicationContext)
-                            tvTitle.text = it.child("title").value.toString()
-                            tvTitle.textSize = 18f
-                            tvTitle.setPadding(0, 60, 0, 0)
+                            binding.userLandingTitleTv.text = it.child("title").value.toString()
+                            binding.userLandingAddressTv.text = it.child("address").value.toString()
+                            binding.userLandingDescTv.text = it.child("desc").value.toString()
 
-                            val tvAddress = TextView(applicationContext)
-                            tvAddress.text = it.child("address").value.toString()
-                            tvAddress.textSize = 16f
-                            tvAddress.setPadding(0, 10, 0, 20)
-
-                            val butUnsubscribe = Button(applicationContext)
-                            butUnsubscribe.text = "Unsubscribe"
-                            butUnsubscribe.setOnClickListener {
-                                account.child("subscribed").removeValue()
-                            }
-
-
-                            binding.userLandingLocationsLl.addView(tvTitle)
-                            binding.userLandingLocationsLl.addView(tvAddress)
-                            binding.userLandingLocationsLl.addView(butUnsubscribe)
-
-                            Log.d(TAG, "onDataChange: ${it.child("title").value.toString()}")
                         }
-
                     }
                 }
-
-
-
             }
 
             override fun onCancelled(error: DatabaseError) {
-                val noneTv = TextView(applicationContext)
-                noneTv.text = "No current locations"
-                binding.userLandingLocationsLl.addView(noneTv)
+
             }
         })
 
         binding.userLandingButtonSeeAll.setOnClickListener {
-
             startActivity(Intent(this, AllLocations::class.java))
         }
 
+        binding.userLandingButtonForm.setOnClickListener {
+            startActivity(Intent(applicationContext, UserForm::class.java))
+        }
 
+        binding.userLandingButtonUnsubscribe.setOnClickListener {
+            account.child("subscribed").removeValue()
+        }
 
+        // END ONCREATE
     }
 
     override fun onStart() {
@@ -167,10 +159,15 @@ class UserLanding : AppCompatActivity() {
         checkPermissionsAndStartGeofencing()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        removeGeofences()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON) {
-            checkDeviceLocationSettingsAndStartGeofence(false)
+            //checkDeviceLocationSettingsAndStartGeofence(false)
         }
     }
 
@@ -299,6 +296,7 @@ class UserLanding : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun addGeofenceForClue() {
 
         val geofence = Geofence.Builder()
@@ -320,15 +318,11 @@ class UserLanding : AppCompatActivity() {
             addOnCompleteListener {
                 geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
                     addOnSuccessListener {
-                        Toast.makeText(this@UserLanding, "Geofences Added",
-                            Toast.LENGTH_SHORT)
-                            .show()
-                        Log.e("Add Geofence", geofence.requestId)
+                        Log.d(TAG, "Geofence added " + geofence.requestId)
                     }
                     addOnFailureListener {
-                        Toast.makeText(this@UserLanding, "Geofences not added",
-                            Toast.LENGTH_SHORT).show()
                         if ((it.message != null)) {
+                            Log.w(TAG, "Geofences not added")
                             Log.w(TAG, it.message.toString())
                         }
                     }
@@ -345,11 +339,26 @@ class UserLanding : AppCompatActivity() {
         }
     }
 
-}
+    private fun removeGeofences() {
+        if (!foregroundAndBackgroundLocationPermissionApproved()) {
+            return
+        }
+        geofencingClient.removeGeofences(geofencePendingIntent)?.run {
+            addOnSuccessListener {
+                Log.d(TAG, "Geofences removed")
+            }
+            addOnFailureListener {
+                Log.e(TAG, "Geofences not removed")
+            }
+        }
+    }
 
-private const val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 33
-private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
-private const val REQUEST_TURN_DEVICE_LOCATION_ON = 29
-private const val TAG = "UserLanding"
-private const val LOCATION_PERMISSION_INDEX = 0
-private const val BACKGROUND_LOCATION_PERMISSION_INDEX = 1
+    companion object {
+        private const val TAG = "UserLanding"
+        private const val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 33
+        private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
+        private const val REQUEST_TURN_DEVICE_LOCATION_ON = 29
+        private const val LOCATION_PERMISSION_INDEX = 0
+        private const val BACKGROUND_LOCATION_PERMISSION_INDEX = 1
+    }
+}
