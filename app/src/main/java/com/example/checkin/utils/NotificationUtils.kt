@@ -19,7 +19,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
-
 private const val NOTIFICATION_ID = 33
 private const val CHANNEL_ID = "GeofenceChannel"
 private lateinit var registered : DatabaseReference

@@ -9,6 +9,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.view.marginTop
 import com.example.checkin.R
 import com.example.checkin.databinding.ActivityAllLocationsBinding
 import com.google.firebase.auth.ktx.auth
@@ -37,62 +38,54 @@ class AllLocations : AppCompatActivity() {
         binding = ActivityAllLocationsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        // database references
         database = Firebase.database.reference
         accounts = Firebase.database.reference.child("accounts")
         account = accounts.child(Firebase.auth.currentUser?.uid.toString())
         locations = database.child("locations")
 
-
-
-
-
+        // for each location add a view and update if they complete the form
         locations.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 Log.d(TAG, "onDataChange: ${snapshot.childrenCount}")
                 if(snapshot.hasChildren()) {
                     snapshot.children.forEach {
 
+                        // manually set for now
+                        // TODO: Move into layout
                         val tvTitle = TextView(applicationContext)
                         tvTitle.text = it.child("title").value.toString()
+                        tvTitle.setPadding(0, 110, 0, 0)
+                        tvTitle.textSize = 20f
 
                         val tvDesc = TextView(applicationContext)
                         tvDesc.text = it.child("desc").value.toString()
+                        tvDesc.setPadding(0, 20, 0, 30)
 
                         val tvAddress = TextView(applicationContext)
                         tvAddress.text = it.child("address").value.toString()
+                        tvAddress.setPadding(0, 20, 0, 0)
 
                         val id = it.key.toString()
                         val but = Button(applicationContext)
                         but.text = "Subscribe"
                         but.setOnClickListener {
                             account.child("subscribed").setValue(id)
-
-
-
                         }
 
                         binding.allLocationsLl.addView(tvTitle)
                         binding.allLocationsLl.addView(tvAddress)
                         binding.allLocationsLl.addView(tvDesc)
                         binding.allLocationsLl.addView(but)
-
-                        Log.d(TAG, "onDataChange: ${it.child("title").value.toString()}")
-
-
-
                     }
                 }
-
             }
-
             override fun onCancelled(error: DatabaseError) {
                 val noneTv = TextView(applicationContext)
                 noneTv.text = "No current locations"
                 binding.allLocationsLl.addView(noneTv)
             }
         })
-    // end onCreate
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -102,7 +95,6 @@ class AllLocations : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         return when(item.itemId) {
             R.id.main_menu_home -> {
                 var homeIntent = Intent(this, UserLanding::class.java)
@@ -116,6 +108,5 @@ class AllLocations : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-
     }
 }

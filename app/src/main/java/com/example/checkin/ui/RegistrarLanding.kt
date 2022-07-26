@@ -43,15 +43,12 @@ class RegistrarLanding : AppCompatActivity() {
         binding = ActivityRegistrarLandingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var prevChildCount = 0L
-
         account.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.child("firstName").value != null) {
                     binding.registrarLandingWelcomeText.text = "Hello, ${snapshot.child("firstName").value.toString()}"
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
 
             }
@@ -64,10 +61,10 @@ class RegistrarLanding : AppCompatActivity() {
 
         accounts.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val childs = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("registers").childrenCount
+                val childCount = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("registers").childrenCount
                 val registers = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("registers")
 
-                if(childs > prevChildCount) {
+
                     //send notification
                     val notificationManager = ContextCompat.getSystemService(
                         applicationContext,
@@ -75,9 +72,9 @@ class RegistrarLanding : AppCompatActivity() {
                     ) as NotificationManager
 
                     notificationManager.sendGeofenceEnteredAdminNotification(applicationContext)
-                }
 
-                Log.d(TAG, "onDataChange: $childs")
+
+                Log.d(TAG, "onDataChange: $childCount")
                 if(registers.hasChildren()) {
                     registers.children.forEach {
 
@@ -109,8 +106,6 @@ class RegistrarLanding : AppCompatActivity() {
                         tvName.textSize = 20f
                         isFormCompleted.text = "Form Completed"
 
-
-
                         binding.registrarLandingLl.addView(tvName)
                         binding.registrarLandingLl.addView(tvBirthday)
                         binding.registrarLandingLl.addView(isFormCompleted)
@@ -120,20 +115,14 @@ class RegistrarLanding : AppCompatActivity() {
                         }
                     }
                 }
-                prevChildCount = snapshot.childrenCount
-            }
 
+            }
             override fun onCancelled(error: DatabaseError) {
                 val noneTv = TextView(applicationContext)
                 noneTv.text = "No current registers"
                 binding.registrarLandingLl.addView(noneTv)
             }
         })
-
-    }
-
-    private fun deleteRegister(uid: String) {
-        registers.child(uid).removeValue()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

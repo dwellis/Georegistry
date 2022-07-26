@@ -29,8 +29,6 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     private lateinit var registered : DatabaseReference
 
 
-
-
     override fun onReceive(context: Context?, intent: Intent?) {
 
         database = Firebase.database.reference
@@ -40,7 +38,6 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         registered = account.child("registered")
 
         var subscribedID = ""
-
 
         // get data snapshot
         account.addValueEventListener(object : ValueEventListener {
@@ -56,10 +53,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 accounts.child(subscribedID).child("registers").child(Firebase.auth.uid.toString()).child("isFormComplete").setValue(
                     false
                 )
-
-
             }
-
             override fun onCancelled(error: DatabaseError) {
 
             }
@@ -71,25 +65,6 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
             Log.d(TAG, "Geofence entered")
 
-
-            Log.d(TAG, "onReceive: registered is $isRegistered before")
-
-            registered.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    isRegistered = snapshot.value.toString().toBoolean()
-                    Log.d(TAG, "onDataChange: registered is $isRegistered")
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    isRegistered = false
-                }
-            })
-
-
-            if(!isRegistered) {
-
-                Log.d(TAG, "User not registered. Sending notification")
-
                 val notificationManager = ContextCompat.getSystemService(
                     context!!,
                     NotificationManager::class.java
@@ -98,8 +73,6 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 notificationManager.sendGeofenceEnteredNotification(context)
 
                 account.child("registered").setValue(true)
-
-            }
         }
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
             Log.d(TAG, "Geofence exited")
