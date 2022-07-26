@@ -1,12 +1,14 @@
 package com.example.checkin.ui
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.annotation.RequiresApi
 import com.example.checkin.R
 import com.example.checkin.databinding.ActivityUserFormBinding
 import com.google.firebase.auth.ktx.auth
@@ -26,6 +28,7 @@ class UserForm : AppCompatActivity() {
     private lateinit var account : DatabaseReference
     private lateinit var locations : DatabaseReference
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -74,6 +77,8 @@ class UserForm : AppCompatActivity() {
 
                 }
             })
+
+            account.child("isComplete").setValue(true)
 
             val intent = Intent(applicationContext, UserLanding::class.java)
             startActivity(intent)

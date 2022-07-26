@@ -89,24 +89,42 @@ class UserLanding : AppCompatActivity() {
         lat = "0"
         lng = "0"
         var isRegistered = false
+        var isComplete = false
 
         account.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 subscribedID = snapshot.child("subscribed").value.toString()
+                isRegistered = snapshot.child("registered").value.toString().toBoolean()
+                isComplete = snapshot.child("isComplete").value.toString().toBoolean()
 
                 if(snapshot.child("firstName").value != null) {
                     val welcomeText = "Welcome, " + snapshot.child("firstName").value.toString()
                     binding.userLandingWelcomeText.text = welcomeText
                 }
 
-                isRegistered = account.child("registered").toString().toBoolean()
+                if(!isRegistered) {
+                    binding.userLandingIsRegistered.isChecked = false
+                    binding.userLandingButtonForm.visibility = View.GONE
+                    binding.userLandingButtonForm.isClickable = false
+                }
+
                 if(isRegistered) {
                     binding.userLandingIsRegistered.isChecked = true
                     binding.userLandingButtonForm.visibility = View.VISIBLE
                     binding.userLandingButtonForm.isClickable = true
-
                 }
+
+                if(isComplete) {
+                    binding.userLandingIsComplete.isChecked = true
+                    binding.userLandingButtonForm.visibility = View.GONE
+                    binding.userLandingButtonForm.isClickable = false
+                }
+
+                if(!isComplete) {
+                    binding.userLandingIsComplete.isChecked = false
+                }
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -149,6 +167,8 @@ class UserLanding : AppCompatActivity() {
 
         binding.userLandingButtonUnsubscribe.setOnClickListener {
             account.child("subscribed").removeValue()
+            account.child("registered").setValue(false)
+            account.child("isComplete").setValue(false)
         }
 
         // END ONCREATE
@@ -178,7 +198,6 @@ class UserLanding : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
             return when(item.itemId) {
                 R.id.main_menu_home -> {
                     var homeIntent = Intent(this, UserLanding::class.java)

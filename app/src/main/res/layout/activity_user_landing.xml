@@ -26,7 +26,7 @@
         android:textColor="@color/black"
         android:textSize="30sp"
         android:fontFamily="@font/cognizant_sans"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_landing_icon" />
 
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:text="Below is your subscribed location"
         android:textSize="20sp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_landing_welcome_text" />
@@ -57,7 +57,8 @@
         android:layout_width="190dp"
         android:layout_height="wrap_content"
         android:text="See All Locations"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginRight="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
@@ -65,7 +66,7 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_landing_pending">
 
@@ -76,7 +77,7 @@
             android:textColor="@color/black"
             android:text="No Current Location"
             android:textSize="24sp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"/>
 
         <TextView
@@ -89,11 +90,11 @@
             android:textSize="20sp" />
 
         <CheckBox
-            android:id="@+id/checkBox"
+            android:id="@+id/user_landing_is_complete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:layout_marginTop="140dp"
+            android:layout_marginTop="175dp"
             android:layout_marginLeft="160dp"
             android:text="Complete"
             android:clickable="false"
@@ -105,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="140dp"
+            android:layout_marginTop="175dp"
             android:text="Registered"
             android:clickable="false"
             android:textSize="20sp" />
@@ -114,7 +115,7 @@
             android:id="@+id/user_landing_desc_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="120dp"
             android:textSize="16sp"
             android:layout_marginLeft="10dp"
             android:text="Please go subscribe to a location" />
@@ -123,8 +124,8 @@
             android:id="@+id/user_landing_button_unsubscribe"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="200dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="260dp"
+            android:layout_marginBottom="20dp"
             android:layout_gravity="right"
             android:layout_marginRight="10dp"
             android:textSize="10sp"
@@ -134,8 +135,8 @@
             android:id="@+id/user_landing_button_form"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="200dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="260dp"
+            android:layout_marginBottom="20dp"
             android:layout_gravity="right"
             android:layout_marginRight="150dp"
             android:clickable="false"
