@@ -1,12 +1,10 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 import android.app.NotificationManager
 import android.content.Intent
-import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -14,10 +12,9 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginRight
-import androidx.core.view.marginTop
+import com.example.checkin.R
 import com.example.checkin.databinding.ActivityRegistrarLandingBinding
-import com.google.firebase.auth.FirebaseAuth
+import com.example.checkin.sendGeofenceEnteredAdminNotification
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -30,13 +27,14 @@ class RegistrarLanding : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegistrarLandingBinding
     private lateinit var database: DatabaseReference
-    private lateinit var accounts : DatabaseReference
-    private lateinit var account : DatabaseReference
-    private  lateinit var registers : DatabaseReference
+    private lateinit var accounts: DatabaseReference
+    private lateinit var account: DatabaseReference
+    private lateinit var registers: DatabaseReference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         database = Firebase.database.reference
         accounts = Firebase.database.reference.child("accounts")
         account = accounts.child(Firebase.auth.currentUser?.uid.toString())
@@ -45,21 +43,16 @@ class RegistrarLanding : AppCompatActivity() {
         binding = ActivityRegistrarLandingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var prevChildCount = 0L
-
         account.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.child("firstName").value != null) {
                     binding.registrarLandingWelcomeText.text = "Hello, ${snapshot.child("firstName").value.toString()}"
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
 
             }
         })
-
-
 
         binding.registrarLandingButtonSeeAll.setOnClickListener {
             val intent = Intent(this, ManageActivity::class.java)
@@ -68,11 +61,10 @@ class RegistrarLanding : AppCompatActivity() {
 
         accounts.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val childs = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("registers").childrenCount
+                val childCount = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("registers").childrenCount
                 val registers = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("registers")
 
 
-                if(childs > prevChildCount) {
                     //send notification
                     val notificationManager = ContextCompat.getSystemService(
                         applicationContext,
@@ -80,16 +72,14 @@ class RegistrarLanding : AppCompatActivity() {
                     ) as NotificationManager
 
                     notificationManager.sendGeofenceEnteredAdminNotification(applicationContext)
-                }
 
-                Log.d(TAG, "onDataChange: $childs")
+
+                Log.d(TAG, "onDataChange: $childCount")
                 if(registers.hasChildren()) {
                     registers.children.forEach {
 
                         val subscriberID = it.key.toString()
                         val isFormComplete = it.child("isFormComplete").value.toString().toBoolean()
-
-
                         val name = it.child("name").value.toString()
                         val birthday = it.child("birthday").value.toString()
 
@@ -102,14 +92,6 @@ class RegistrarLanding : AppCompatActivity() {
                         val isFormCompleted = CheckBox(applicationContext)
                         isFormCompleted.isChecked = isFormComplete
                         isFormCompleted.isClickable = false
-
-//                        val delete = Button(applicationContext)
-//                        delete.text = "Delete"
-//
-//                        delete.setOnClickListener {
-//
-//
-//                        }
 
                         val seeDetails = Button(applicationContext)
                         seeDetails.text = "See Information"
@@ -124,8 +106,6 @@ class RegistrarLanding : AppCompatActivity() {
                         tvName.textSize = 20f
                         isFormCompleted.text = "Form Completed"
 
-
-
                         binding.registrarLandingLl.addView(tvName)
                         binding.registrarLandingLl.addView(tvBirthday)
                         binding.registrarLandingLl.addView(isFormCompleted)
@@ -133,32 +113,16 @@ class RegistrarLanding : AppCompatActivity() {
                         if(isFormComplete) {
                             binding.registrarLandingLl.addView(seeDetails)
                         }
-
-                        //binding.registrarLandingLl.addView(delete)
-
-
-                            Log.d(TAG, "onDataChange: $subscriberID")
-
-
                     }
                 }
 
-                prevChildCount = snapshot.childrenCount
-
-
             }
-
             override fun onCancelled(error: DatabaseError) {
                 val noneTv = TextView(applicationContext)
                 noneTv.text = "No current registers"
                 binding.registrarLandingLl.addView(noneTv)
             }
         })
-
-    }
-
-    private fun deleteRegister(uid: String) {
-        registers.child(uid).removeValue()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -168,48 +132,12 @@ class RegistrarLanding : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(FirebaseAuth.getInstance().currentUser == null) {
             return when(item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
+                    var homeIntent = Intent(this, RegistrarLanding::class.java)
                     startActivity(homeIntent)
                     true
                 }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
-                R.id.main_menu_profile -> {
-                    var loginIntent = Intent(this, LoginActivity::class.java)
-                    startActivity(loginIntent)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
-        }
-        else {
-            return when(item.itemId) {
-                R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
-                    startActivity(homeIntent)
-                    true
-                }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
                 R.id.main_menu_profile -> {
                     var profileIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(profileIntent)
@@ -217,7 +145,6 @@ class RegistrarLanding : AppCompatActivity() {
                 }
                 else -> super.onOptionsItemSelected(item)
             }
-        }
     }
 
     companion object {

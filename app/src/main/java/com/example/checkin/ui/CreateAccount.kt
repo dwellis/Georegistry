@@ -1,4 +1,4 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,8 +8,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import com.example.checkin.R
 import com.example.checkin.databinding.ActivityCreateAccountBinding
-import com.example.checkin.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
@@ -36,12 +36,14 @@ class CreateAccount : AppCompatActivity() {
         // Initialize Firebase Auth
         auth = Firebase.auth
 
+        // db reference for creating account
         database = Firebase.database.reference
 
+        // button for updating an account
+        // replaces previous data with newly entered
+        // TODO: Change password is implemented here instead of its own process
         binding.buttonUpdate.setOnClickListener {
-            Log.d(CreateAccount.TAG, "Register clicked")
             createAccount(binding.createAccountEmailInput.text.toString(), binding.createAccountPasswordInput.text.toString())
-
         }
     }
 
@@ -55,20 +57,10 @@ class CreateAccount : AppCompatActivity() {
         if(FirebaseAuth.getInstance().currentUser == null) {
             return when(item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
+                    var homeIntent = Intent(this, LoginActivity::class.java)
                     startActivity(homeIntent)
                     true
                 }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
                 R.id.main_menu_profile -> {
                     var loginIntent = Intent(this, LoginActivity::class.java)
                     startActivity(loginIntent)
@@ -80,20 +72,10 @@ class CreateAccount : AppCompatActivity() {
         else {
             return when(item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
+                    var homeIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(homeIntent)
                     true
                 }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
                 R.id.main_menu_profile -> {
                     var profileIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(profileIntent)
@@ -110,10 +92,10 @@ class CreateAccount : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(CreateAccount.TAG, "createUserWithEmail:success")
+                    Log.d(TAG, "createUserWithEmail:success")
                     val user = auth.currentUser
 
-                    Toast.makeText(this, "User created", Toast.LENGTH_SHORT)
+                    Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT)
 
                     val account = UserAccount(auth.currentUser?.uid.toString(),
                         binding.createAccountBirthdayInput.text.toString(),
@@ -129,15 +111,14 @@ class CreateAccount : AppCompatActivity() {
                     startActivity(intent)
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(CreateAccount.TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Please fill in every box.",
+                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
+                    // TODO: More information to the user for why they failed to create an account
+                    Toast.makeText(baseContext, "Authentication failure",
                         Toast.LENGTH_SHORT).show()
-
                 }
             }
         // [END create_user_with_email]
     }
-
 
     @IgnoreExtraProperties
     data class UserAccount(
@@ -151,5 +132,4 @@ class CreateAccount : AppCompatActivity() {
         // Null default values create a no-argument default constructor, which is needed
         // for deserialization from a DataSnapshot.
     }
-
 }

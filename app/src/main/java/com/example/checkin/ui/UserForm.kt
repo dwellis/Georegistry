@@ -1,11 +1,16 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import androidx.annotation.RequiresApi
+import com.example.checkin.R
 import com.example.checkin.databinding.ActivityUserFormBinding
-import com.example.checkin.databinding.ActivityUserLandingBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -23,6 +28,7 @@ class UserForm : AppCompatActivity() {
     private lateinit var account : DatabaseReference
     private lateinit var locations : DatabaseReference
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -72,9 +78,35 @@ class UserForm : AppCompatActivity() {
                 }
             })
 
+            account.child("isComplete").setValue(true)
+
             val intent = Intent(applicationContext, UserLanding::class.java)
             startActivity(intent)
 
+        }
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.main_menu,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        return when(item.itemId) {
+            R.id.main_menu_home -> {
+                var homeIntent = Intent(this, UserLanding::class.java)
+                startActivity(homeIntent)
+                true
+            }
+            R.id.main_menu_profile -> {
+                var profileIntent = Intent(this, ProfileActivity::class.java)
+                startActivity(profileIntent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
 
     }

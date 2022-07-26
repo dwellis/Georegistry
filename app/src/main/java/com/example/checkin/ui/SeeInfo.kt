@@ -1,12 +1,14 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.Toast
-import androidx.databinding.adapters.ToolbarBindingAdapter
+import com.example.checkin.R
 import com.example.checkin.databinding.ActivitySeeInfoBinding
-import com.example.checkin.databinding.ActivityUserLandingBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -32,7 +34,7 @@ class SeeInfo : AppCompatActivity() {
         database = Firebase.database.reference
         accounts = Firebase.database.reference.child("accounts")
         account = accounts.child(Firebase.auth.currentUser?.uid.toString())
-        locations = database.child("locations")
+
 
         var firstName = ""
         var lastName = ""
@@ -41,33 +43,50 @@ class SeeInfo : AppCompatActivity() {
         var email = ""
         var address = ""
 
-
-
-
         account.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                binding.seeInfoFirstName.text = snapshot.child("registers").child(intent.extras?.get("UID").toString()).child("firstName").value.toString()
-                binding.seeInfoLastName.text = snapshot.child("registers").child(intent.extras?.get("UID").toString()).child("lastName").value.toString()
-                binding.seeInfoBirthday.text = snapshot.child("registers").child(intent.extras?.get("UID").toString()).child("birthday").value.toString()
-                binding.seeInfoPhone.text = snapshot.child("registers").child(intent.extras?.get("UID").toString()).child("phone").value.toString()
-                binding.seeInfoEmail.text = snapshot.child("registers").child(intent.extras?.get("UID").toString()).child("email").value.toString()
-                binding.seeInfoAddress.text = snapshot.child("registers").child(intent.extras?.get("UID").toString()).child("address").value.toString()
-
-
-
+                val registers = snapshot.child("registers").child(intent.extras?.get("UID").toString())
+                binding.seeInfoFirstName.text = registers.child("firstName").value.toString()
+                binding.seeInfoLastName.text = registers.child("lastName").value.toString()
+                binding.seeInfoBirthday.text = registers.child("birthday").value.toString()
+                binding.seeInfoPhone.text = registers.child("phone").value.toString()
+                binding.seeInfoEmail.text = registers.child("email").value.toString()
+                binding.seeInfoAddress.text = registers.child("address").value.toString()
             }
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
         })
 
-
         binding.seeInfoButtonDelete.setOnClickListener {
             account.child("registers").child(intent.extras?.get("UID").toString()).removeValue()
+            accounts.child(intent.extras?.get("UID").toString()).child("registered").setValue(false)
+            accounts.child(intent.extras?.get("UID").toString()).child("isComplete").setValue(false)
             Toast.makeText(applicationContext, "Register Deleted", Toast.LENGTH_SHORT).show()
             val intent = Intent(applicationContext, RegistrarLanding::class.java)
             startActivity(intent)
         }
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.main_menu,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.main_menu_home -> {
+                var homeIntent = Intent(this, RegistrarLanding::class.java)
+                startActivity(homeIntent)
+                true
+            }
+            R.id.main_menu_profile -> {
+                var profileIntent = Intent(this, ProfileActivity::class.java)
+                startActivity(profileIntent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

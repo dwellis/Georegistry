@@ -1,31 +1,31 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 import android.Manifest
-import android.annotation.TargetApi
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.TextView
+import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
-import androidx.core.view.marginTop
-import androidx.lifecycle.SavedStateViewModelFactory
-import androidx.lifecycle.ViewModelProviders
+import com.example.checkin.BuildConfig
+import com.example.checkin.R
+import com.example.checkin.createChannel
 import com.example.checkin.databinding.ActivityUserLandingBinding
+import com.example.checkin.utils.GeofenceBroadcastReceiver
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -35,79 +35,98 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
+@RequiresApi(Build.VERSION_CODES.S)
 class UserLanding : AppCompatActivity() {
 
+    private lateinit var auth :FirebaseAuth
     private lateinit var binding :ActivityUserLandingBinding
+
+    // db references
     private lateinit var database :DatabaseReference
     private lateinit var accounts :DatabaseReference
     private lateinit var account :DatabaseReference
     private lateinit var locations :DatabaseReference
 
+    // set up for geofencing
     lateinit var geofencingClient :GeofencingClient
 
-
-    private lateinit var auth :FirebaseAuth
-
+    // for easy access to changed values
     lateinit var subscribedID :String
     lateinit var lat :String
     lateinit var lng :String
 
-    private lateinit var viewModel: GeofenceViewModel
-
-
+    // creates the pending intent for geofence transitions handled by the broadcast receiver
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(this, GeofenceBroadcastReceiver::class.java)
         PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_MUTABLE)
     }
 
-    
-    companion object {
-        private const val TAG = "UserLanding"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this, SavedStateViewModelFactory(this.application,
-            this)
-        ).get(GeofenceViewModel::class.java)
-        geofencingClient = LocationServices.getGeofencingClient(this)
-
-        // Create channel for notifications
-        createChannel(this )
+        binding = ActivityUserLandingBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         auth = Firebase.auth
 
+        // get database references
         database = Firebase.database.reference
         accounts = Firebase.database.reference.child("accounts")
         account = accounts.child(Firebase.auth.currentUser?.uid.toString())
         locations = database.child("locations")
 
-        lat = "0"
-        lng = "0"
-
-        var userActive = false
-
+        // create geofencing client
         geofencingClient = LocationServices.getGeofencingClient(this)
 
+        // create channel for notifications
+        createChannel(this )
 
-        binding = ActivityUserLandingBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        // to avoid not initialized error
+        lat = "0"
+        lng = "0"
+        var isRegistered = false
+        var isComplete = false
 
         account.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 subscribedID = snapshot.child("subscribed").value.toString()
-                Log.d(TAG, "onDataChange: subscribed string: $subscribedID")
+                isRegistered = snapshot.child("registered").value.toString().toBoolean()
+                isComplete = snapshot.child("isComplete").value.toString().toBoolean()
 
                 if(snapshot.child("firstName").value != null) {
-                    binding.userLandingWelcomeText.text = "Welcome, ${snapshot.child("firstName").value.toString()}"
+                    val welcomeText = "Welcome, " + snapshot.child("firstName").value.toString()
+                    binding.userLandingWelcomeText.text = welcomeText
                 }
+
+                if(!isRegistered) {
+                    binding.userLandingIsRegistered.isChecked = false
+                    binding.userLandingButtonForm.visibility = View.GONE
+                    binding.userLandingButtonForm.isClickable = false
+                }
+
+                if(isRegistered) {
+                    binding.userLandingIsRegistered.isChecked = true
+                    binding.userLandingButtonForm.visibility = View.VISIBLE
+                    binding.userLandingButtonForm.isClickable = true
+                }
+
+                if(isComplete) {
+                    binding.userLandingIsComplete.isChecked = true
+                    binding.userLandingButtonForm.visibility = View.GONE
+                    binding.userLandingButtonForm.isClickable = false
+                }
+
+                if(!isComplete) {
+                    binding.userLandingIsComplete.isChecked = false
+                }
+
             }
 
             override fun onCancelled(error: DatabaseError) {
 
             }
+
         })
         
         locations.addValueEventListener(object : ValueEventListener {
@@ -115,56 +134,40 @@ class UserLanding : AppCompatActivity() {
                 Log.d(TAG, "onDataChange: ${snapshot.childrenCount}")
                 if(snapshot.hasChildren()) {
                     snapshot.children.forEach {
-                        if(it.key.toString() == subscribedID!!) {
+                        if(it.key.toString() == subscribedID) {
 
                             lat = it.child("lat").value.toString()
                             lng = it.child("lng").value.toString()
 
-                            val tvTitle = TextView(applicationContext)
-                            tvTitle.text = it.child("title").value.toString()
-                            tvTitle.textSize = 18f
-                            tvTitle.setPadding(0, 60, 0, 0)
+                            binding.userLandingTitleTv.text = it.child("title").value.toString()
+                            binding.userLandingAddressTv.text = it.child("address").value.toString()
+                            binding.userLandingDescTv.text = it.child("desc").value.toString()
 
-                            val tvAddress = TextView(applicationContext)
-                            tvAddress.text = it.child("address").value.toString()
-                            tvAddress.textSize = 16f
-                            tvAddress.setPadding(0, 10, 0, 20)
-
-                            val butUnsubscribe = Button(applicationContext)
-                            butUnsubscribe.text = "Unsubscribe"
-                            butUnsubscribe.setOnClickListener {
-                                account.child("subscribed").removeValue()
-                            }
-
-
-                            binding.userLandingLocationsLl.addView(tvTitle)
-                            binding.userLandingLocationsLl.addView(tvAddress)
-                            binding.userLandingLocationsLl.addView(butUnsubscribe)
-
-                            Log.d(TAG, "onDataChange: ${it.child("title").value.toString()}")
                         }
-
                     }
                 }
-
-                val tv = TextView(applicationContext)
-
             }
 
             override fun onCancelled(error: DatabaseError) {
-                val noneTv = TextView(applicationContext)
-                noneTv.text = "No current locations"
-                binding.userLandingLocationsLl.addView(noneTv)
+
             }
         })
 
         binding.userLandingButtonSeeAll.setOnClickListener {
-
             startActivity(Intent(this, AllLocations::class.java))
         }
 
+        binding.userLandingButtonForm.setOnClickListener {
+            startActivity(Intent(applicationContext, UserForm::class.java))
+        }
 
+        binding.userLandingButtonUnsubscribe.setOnClickListener {
+            account.child("subscribed").removeValue()
+            account.child("registered").setValue(false)
+            account.child("isComplete").setValue(false)
+        }
 
+        // END ONCREATE
     }
 
     override fun onStart() {
@@ -172,10 +175,15 @@ class UserLanding : AppCompatActivity() {
         checkPermissionsAndStartGeofencing()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        removeGeofences()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON) {
-            checkDeviceLocationSettingsAndStartGeofence(false)
+            //checkDeviceLocationSettingsAndStartGeofence(false)
         }
     }
 
@@ -186,48 +194,12 @@ class UserLanding : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(FirebaseAuth.getInstance().currentUser == null) {
             return when(item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
+                    var homeIntent = Intent(this, UserLanding::class.java)
                     startActivity(homeIntent)
                     true
                 }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
-                R.id.main_menu_profile -> {
-                    var loginIntent = Intent(this, LoginActivity::class.java)
-                    startActivity(loginIntent)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
-        }
-        else {
-            return when(item.itemId) {
-                R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
-                    startActivity(homeIntent)
-                    true
-                }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-//                R.id.main_menu_forms -> {
-//                    var formsIntent = Intent(this, FormsActivity::class.java)
-//                    startActivity(formsIntent)
-//                    true
-//                }
                 R.id.main_menu_profile -> {
                     var profileIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(profileIntent)
@@ -235,7 +207,7 @@ class UserLanding : AppCompatActivity() {
                 }
                 else -> super.onOptionsItemSelected(item)
             }
-        }
+
     }
 
     override fun onRequestPermissionsResult(
@@ -319,7 +291,8 @@ class UserLanding : AppCompatActivity() {
             if (exception is ResolvableApiException && resolve){
                 try {
                     exception.startResolutionForResult(this@UserLanding,
-                        REQUEST_TURN_DEVICE_LOCATION_ON)
+                        REQUEST_TURN_DEVICE_LOCATION_ON
+                    )
                 } catch (sendEx: IntentSender.SendIntentException) {
                     Log.d(TAG, "Error getting location settings resolution: " + sendEx.message)
                 }
@@ -338,6 +311,7 @@ class UserLanding : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun addGeofenceForClue() {
 
         val geofence = Geofence.Builder()
@@ -355,19 +329,15 @@ class UserLanding : AppCompatActivity() {
             .addGeofence(geofence)
             .build()
 
-        geofencingClient.removeGeofences(geofencePendingIntent)?.run {
+        geofencingClient.removeGeofences(geofencePendingIntent).run {
             addOnCompleteListener {
-                geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
+                geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
                     addOnSuccessListener {
-                        Toast.makeText(this@UserLanding, "Geofences Added",
-                            Toast.LENGTH_SHORT)
-                            .show()
-                        Log.e("Add Geofence", geofence.requestId)
+                        Log.d(TAG, "Geofence added " + geofence.requestId)
                     }
                     addOnFailureListener {
-                        Toast.makeText(this@UserLanding, "Geofences not added",
-                            Toast.LENGTH_SHORT).show()
                         if ((it.message != null)) {
+                            Log.w(TAG, "Geofences not added")
                             Log.w(TAG, it.message.toString())
                         }
                     }
@@ -384,11 +354,26 @@ class UserLanding : AppCompatActivity() {
         }
     }
 
-}
+    private fun removeGeofences() {
+        if (!foregroundAndBackgroundLocationPermissionApproved()) {
+            return
+        }
+        geofencingClient.removeGeofences(geofencePendingIntent)?.run {
+            addOnSuccessListener {
+                Log.d(TAG, "Geofences removed")
+            }
+            addOnFailureListener {
+                Log.e(TAG, "Geofences not removed")
+            }
+        }
+    }
 
-private const val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 33
-private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
-private const val REQUEST_TURN_DEVICE_LOCATION_ON = 29
-private const val TAG = "UserLanding"
-private const val LOCATION_PERMISSION_INDEX = 0
-private const val BACKGROUND_LOCATION_PERMISSION_INDEX = 1
+    companion object {
+        private const val TAG = "UserLanding"
+        private const val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 33
+        private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
+        private const val REQUEST_TURN_DEVICE_LOCATION_ON = 29
+        private const val LOCATION_PERMISSION_INDEX = 0
+        private const val BACKGROUND_LOCATION_PERMISSION_INDEX = 1
+    }
+}

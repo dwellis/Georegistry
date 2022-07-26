@@ -1,21 +1,16 @@
-package com.example.checkin
+package com.example.checkin.ui
 
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.checkin.BuildConfig
+import com.example.checkin.R
 import com.example.checkin.databinding.ActivityManageBinding
-import com.example.checkin.ui.dialogs.AddCheckIn
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -26,6 +21,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.io.File
+import java.io.FileInputStream
 import java.util.*
 
 
@@ -36,7 +33,6 @@ class ManageActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var accounts: DatabaseReference
     private lateinit var account: DatabaseReference
-
 
     lateinit var id : String
     lateinit var name : String
@@ -61,9 +57,8 @@ class ManageActivity : AppCompatActivity() {
         accounts = Firebase.database.reference.child("accounts")
         account = accounts.child(Firebase.auth.currentUser?.uid.toString())
 
-
-
-        val apiKey = getString(R.string.api_key)
+        // gets API key from local.properties
+        val apiKey = BuildConfig.MAPS_API_KEY
 
         /**
          * Initialize Places. For simplicity, the API key is hard-coded. In a production
@@ -77,11 +72,8 @@ class ManageActivity : AppCompatActivity() {
             Places.initialize(applicationContext, apiKey)
         }
 
-// Create a new Places client instance.
-
-// Create a new Places client instance.
+        // Create a new Places client instance.
         val placesClient = Places.createClient(this)
-
 
         // Initialize the AutocompleteSupportFragment.
         val autocompleteFragment =
@@ -89,7 +81,12 @@ class ManageActivity : AppCompatActivity() {
                     as AutocompleteSupportFragment
 
         // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS))
+        autocompleteFragment.setPlaceFields(listOf(
+            Place.Field.ID,
+            Place.Field.NAME,
+            Place.Field.LAT_LNG,
+            Place.Field.ADDRESS
+        ))
 
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
@@ -109,11 +106,7 @@ class ManageActivity : AppCompatActivity() {
             }
         })
 
-
-
-
         binding.manageButtonAddCheckIn.setOnClickListener {
-
             val title = binding.autoCompleteTextView.text.toString()
             val desc = binding.autoCompleteTextView2.text.toString()
 
@@ -125,13 +118,11 @@ class ManageActivity : AppCompatActivity() {
         // listener for current location
         database.child("locations").child(auth.uid.toString()).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("firstName").value
                 binding.manageTitleTv.text = snapshot.child("title").value.toString()
                 binding.manageDescriptionTv.text = snapshot.child("desc").value.toString()
                 binding.manageAddressTv.text = snapshot.child("address").value.toString()
                 binding.manageActiveCheckBox.isChecked = snapshot.child("active").value.toString().toBoolean()
             }
-
             override fun onCancelled(error: DatabaseError) {
 
             }
@@ -143,7 +134,6 @@ class ManageActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.main_menu,menu)
 
@@ -151,36 +141,10 @@ class ManageActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(FirebaseAuth.getInstance().currentUser == null) {
             return when(item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
+                    var homeIntent = Intent(this, RegistrarLanding::class.java)
                     startActivity(homeIntent)
-                    true
-                }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
-                    true
-                }
-                R.id.main_menu_profile -> {
-                    var loginIntent = Intent(this, LoginActivity::class.java)
-                    startActivity(loginIntent)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
-        }
-        else {
-            return when(item.itemId) {
-                R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, MainActivity::class.java)
-                    startActivity(homeIntent)
-                    true
-                }
-                R.id.main_menu_maps -> {
-                    var mapsIntent = Intent(this, MapsActivity::class.java)
-                    startActivity(mapsIntent)
                     true
                 }
                 R.id.main_menu_profile -> {
@@ -190,13 +154,9 @@ class ManageActivity : AppCompatActivity() {
                 }
                 else -> super.onOptionsItemSelected(item)
             }
-        }
     }
 
-    private fun showAddCheckInDialog() {
-        AddCheckIn().show(supportFragmentManager, "AddCheckIn")
-    }
-
+    // class for creating location object in database
     @IgnoreExtraProperties
     data class Location(
         val ID : String? = null,
