@@ -70,11 +70,8 @@ class ManageActivity : AppCompatActivity() {
             Places.initialize(applicationContext, apiKey)
         }
 
-// Create a new Places client instance.
-
-// Create a new Places client instance.
+        // Create a new Places client instance.
         val placesClient = Places.createClient(this)
-
 
         // Initialize the AutocompleteSupportFragment.
         val autocompleteFragment =
@@ -82,7 +79,12 @@ class ManageActivity : AppCompatActivity() {
                     as AutocompleteSupportFragment
 
         // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS))
+        autocompleteFragment.setPlaceFields(listOf(
+            Place.Field.ID,
+            Place.Field.NAME,
+            Place.Field.LAT_LNG,
+            Place.Field.ADDRESS
+        ))
 
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
@@ -102,11 +104,7 @@ class ManageActivity : AppCompatActivity() {
             }
         })
 
-
-
-
         binding.manageButtonAddCheckIn.setOnClickListener {
-
             val title = binding.autoCompleteTextView.text.toString()
             val desc = binding.autoCompleteTextView2.text.toString()
 
@@ -118,13 +116,11 @@ class ManageActivity : AppCompatActivity() {
         // listener for current location
         database.child("locations").child(auth.uid.toString()).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val value = snapshot.child("accounts").child(Firebase.auth.currentUser?.uid.toString()).child("firstName").value
                 binding.manageTitleTv.text = snapshot.child("title").value.toString()
                 binding.manageDescriptionTv.text = snapshot.child("desc").value.toString()
                 binding.manageAddressTv.text = snapshot.child("address").value.toString()
                 binding.manageActiveCheckBox.isChecked = snapshot.child("active").value.toString().toBoolean()
             }
-
             override fun onCancelled(error: DatabaseError) {
 
             }
@@ -136,7 +132,6 @@ class ManageActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.main_menu,menu)
 
@@ -144,7 +139,6 @@ class ManageActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
             return when(item.itemId) {
                 R.id.main_menu_home -> {
                     var homeIntent = Intent(this, RegistrarLanding::class.java)
@@ -158,11 +152,9 @@ class ManageActivity : AppCompatActivity() {
                 }
                 else -> super.onOptionsItemSelected(item)
             }
-
     }
 
-
-
+    // class for creating location object in database
     @IgnoreExtraProperties
     data class Location(
         val ID : String? = null,

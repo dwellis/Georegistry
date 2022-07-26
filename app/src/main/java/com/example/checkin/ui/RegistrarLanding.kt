@@ -27,13 +27,14 @@ class RegistrarLanding : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegistrarLandingBinding
     private lateinit var database: DatabaseReference
-    private lateinit var accounts : DatabaseReference
-    private lateinit var account : DatabaseReference
-    private  lateinit var registers : DatabaseReference
+    private lateinit var accounts: DatabaseReference
+    private lateinit var account: DatabaseReference
+    private lateinit var registers: DatabaseReference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         database = Firebase.database.reference
         accounts = Firebase.database.reference.child("accounts")
         account = accounts.child(Firebase.auth.currentUser?.uid.toString())
@@ -56,8 +57,6 @@ class RegistrarLanding : AppCompatActivity() {
             }
         })
 
-
-
         binding.registrarLandingButtonSeeAll.setOnClickListener {
             val intent = Intent(this, ManageActivity::class.java)
             startActivity(intent)
@@ -67,7 +66,6 @@ class RegistrarLanding : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val childs = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("registers").childrenCount
                 val registers = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("registers")
-
 
                 if(childs > prevChildCount) {
                     //send notification
@@ -85,8 +83,6 @@ class RegistrarLanding : AppCompatActivity() {
 
                         val subscriberID = it.key.toString()
                         val isFormComplete = it.child("isFormComplete").value.toString().toBoolean()
-
-
                         val name = it.child("name").value.toString()
                         val birthday = it.child("birthday").value.toString()
 
@@ -99,14 +95,6 @@ class RegistrarLanding : AppCompatActivity() {
                         val isFormCompleted = CheckBox(applicationContext)
                         isFormCompleted.isChecked = isFormComplete
                         isFormCompleted.isClickable = false
-
-//                        val delete = Button(applicationContext)
-//                        delete.text = "Delete"
-//
-//                        delete.setOnClickListener {
-//
-//
-//                        }
 
                         val seeDetails = Button(applicationContext)
                         seeDetails.text = "See Information"
@@ -130,19 +118,9 @@ class RegistrarLanding : AppCompatActivity() {
                         if(isFormComplete) {
                             binding.registrarLandingLl.addView(seeDetails)
                         }
-
-                        //binding.registrarLandingLl.addView(delete)
-
-
-                            Log.d(TAG, "onDataChange: $subscriberID")
-
-
                     }
                 }
-
                 prevChildCount = snapshot.childrenCount
-
-
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -165,7 +143,6 @@ class RegistrarLanding : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
             return when(item.itemId) {
                 R.id.main_menu_home -> {
                     var homeIntent = Intent(this, RegistrarLanding::class.java)
@@ -179,7 +156,6 @@ class RegistrarLanding : AppCompatActivity() {
                 }
                 else -> super.onOptionsItemSelected(item)
             }
-
     }
 
     companion object {
