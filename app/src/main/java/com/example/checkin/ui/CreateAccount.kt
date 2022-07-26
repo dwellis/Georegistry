@@ -36,7 +36,7 @@ class CreateAccount : AppCompatActivity() {
         // Initialize Firebase Auth
         auth = Firebase.auth
 
-        // db reference
+        // db reference for creating account
         database = Firebase.database.reference
 
         // button for updating an account

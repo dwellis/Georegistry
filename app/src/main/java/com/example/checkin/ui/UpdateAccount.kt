@@ -84,7 +84,6 @@ class UpdateAccount : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
             return when(item.itemId) {
                 R.id.main_menu_home -> {
                     var homeIntent = Intent(this, ProfileActivity::class.java)
@@ -98,7 +97,5 @@ class UpdateAccount : AppCompatActivity() {
                 }
                 else -> super.onOptionsItemSelected(item)
             }
-
-
     }
 }
