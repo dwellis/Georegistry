@@ -15,4 +15,10 @@ Android API S or higher
   - On the Credentials page click Create > Credentials > API Key
   - Copy the created API key and open the local.properties file in your root directory
   - Add a new variable under the sdk that reads MAPS_API_KEY=<your key>
-- Run the Application
+- <b>Before Running: You must add a google-services.json file to your app directory</b>
+  - Log in to firebase and visit the console
+  - Create a project that will store the database and provide authentication for the application
+  - Go to Project Settings by clicking the project name or clicking the gear in the menu
+  - Scroll down until you see the download for google-services.json (its a little down)
+  - Take that downloaded file and paste it in your app directory
+- Run the app
