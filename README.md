@@ -9,7 +9,7 @@ Android Studio 2021
 Android API S or higher
 
 - Clone the repo into your AndroidStudioProjects folder or directly from within Android Studio
-- BEFORE RUNNING: YOU MUST ADD YOUR GOOGLE MAPS API KEY TO local.properties
+- <b>Before Running: You must add your Google Maps API Key to local.properties</b>
   - You must make an account with Google Cloud
   - Go to your Google Maps Console and go to Credentials
   - On the Credentials page click Create > Credentials > API Key
