@@ -5,14 +5,6 @@
         android:title="@string/main_menu_home">
     </item>
     <item
-        android:id="@+id/main_menu_maps"
-        android:title="@string/main_menu_maps">
-    </item>
-<!--    <item-->
-<!--        android:id="@+id/main_menu_forms"-->
-<!--        android:title="@string/main_menu_forms">-->
-<!--    </item>-->
-    <item
         android:id="@+id/main_menu_profile"
         android:title="@string/main_menu_profile">
     </item>

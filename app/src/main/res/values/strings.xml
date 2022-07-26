@@ -1,21 +1,21 @@
 <resources>
-    <string name="app_name">QuickCheck</string>
-    <string name="title_activity_maps">QuickCheck</string>
+    <string name="app_name">georegistry</string>
+    <string name="title_activity_maps">georegistry</string>
 
     <!--    menu strings-->
-    <string name="main_menu_home">Home</string>
-    <string name="main_menu_maps">Maps</string>
-    <string name="main_menu_forms">Forms</string>
+    <string name="main_menu_home">home</string>
+    <string name="main_menu_maps">maps</string>
+    <string name="main_menu_forms">forms</string>
     <string name="title_activity_login">LoginActivity</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="prompt_email">email</string>
+    <string name="prompt_password">password</string>
+    <string name="action_sign_in">sign in</string>
+    <string name="action_sign_in_short">sign in</string>
     <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="invalid_username">not a valid username</string>
+    <string name="invalid_password">password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
-    <string name="main_menu_profile">Profile</string>
+    <string name="main_menu_profile">profile</string>
     <string name="action_register">Register Account</string>
     <string name="forms_action_submit">Submit</string>
     <string name="last_name_label_text">Last Name</string>
@@ -32,6 +32,7 @@
     <string name="channel_name">GeofenceStatus</string>
     <string name="content_text">You entered a Geofence.</string>
     <string name="notification_channel_description">Geofence status notification</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

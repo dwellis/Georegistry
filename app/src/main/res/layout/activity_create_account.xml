@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="15dp"
-    tools:context=".CreateAccount">
+    tools:context=".ui.CreateAccount">
 
     <TextView
         android:id="@+id/update_account_title"
@@ -13,10 +13,11 @@
         android:layout_height="wrap_content"
         android:text="@string/create_an_account_title"
         android:textSize="30sp"
-        android:layout_marginTop="30dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
     <TextView
         android:id="@+id/create_account_subtitle"
@@ -148,9 +149,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="Admin"
-        app:layout_constraintStart_toStartOf="@+id/create_account_password_label"
+        android:layout_marginRight="15dp"
+        android:text="Registrar"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_account_password_input" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/globe_logo" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
