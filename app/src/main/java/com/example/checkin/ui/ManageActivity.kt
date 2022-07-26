@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.example.checkin.BuildConfig
 import com.example.checkin.R
 import com.example.checkin.databinding.ActivityManageBinding
 import com.google.android.gms.common.api.Status
@@ -20,6 +21,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.io.File
+import java.io.FileInputStream
+import java.util.*
 
 
 class ManageActivity : AppCompatActivity() {
@@ -29,7 +33,6 @@ class ManageActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var accounts: DatabaseReference
     private lateinit var account: DatabaseReference
-
 
     lateinit var id : String
     lateinit var name : String
@@ -54,9 +57,8 @@ class ManageActivity : AppCompatActivity() {
         accounts = Firebase.database.reference.child("accounts")
         account = accounts.child(Firebase.auth.currentUser?.uid.toString())
 
-
-
-        val apiKey = getString(R.string.api_key)
+        // gets API key from local.properties
+        val apiKey = BuildConfig.MAPS_API_KEY
 
         /**
          * Initialize Places. For simplicity, the API key is hard-coded. In a production
