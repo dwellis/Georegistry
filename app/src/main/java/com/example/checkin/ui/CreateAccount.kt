@@ -36,12 +36,14 @@ class CreateAccount : AppCompatActivity() {
         // Initialize Firebase Auth
         auth = Firebase.auth
 
+        // db reference
         database = Firebase.database.reference
 
+        // button for updating an account
+        // replaces previous data with newly entered
+        // TODO: Change password is implemented here instead of its own process
         binding.buttonUpdate.setOnClickListener {
-            Log.d(TAG, "Register clicked")
             createAccount(binding.createAccountEmailInput.text.toString(), binding.createAccountPasswordInput.text.toString())
-
         }
     }
 
@@ -93,7 +95,7 @@ class CreateAccount : AppCompatActivity() {
                     Log.d(TAG, "createUserWithEmail:success")
                     val user = auth.currentUser
 
-                    Toast.makeText(this, "User created", Toast.LENGTH_SHORT)
+                    Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT)
 
                     val account = UserAccount(auth.currentUser?.uid.toString(),
                         binding.createAccountBirthdayInput.text.toString(),
@@ -110,14 +112,13 @@ class CreateAccount : AppCompatActivity() {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Please fill in every box.",
+                    // TODO: More information to the user for why they failed to create an account
+                    Toast.makeText(baseContext, "Authentication failure",
                         Toast.LENGTH_SHORT).show()
-
                 }
             }
         // [END create_user_with_email]
     }
-
 
     @IgnoreExtraProperties
     data class UserAccount(
@@ -131,5 +132,4 @@ class CreateAccount : AppCompatActivity() {
         // Null default values create a no-argument default constructor, which is needed
         // for deserialization from a DataSnapshot.
     }
-
 }
