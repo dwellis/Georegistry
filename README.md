@@ -6,7 +6,7 @@ To run the application:
 
 
 <b>Required Software</b>
-Android Studio 2021<br>
+Android Studio 2021
 Android API S or higher
 
 - Clone the repo into your AndroidStudioProjects folder or directly from within Android Studio
