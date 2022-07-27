@@ -1,9 +1,9 @@
 # Georegistry
 
-Welcome to Georegistry, a location-based application for quick processing of user forms.
+Welcome to Georegistry, a location-based application for the quick processing of user forms.
+
 
 To run the application:
-
 
 <b>Required Software</b><br>
 Android Studio 2021<br>
