@@ -5,8 +5,8 @@ Welcome to Georegistry, a location-based application for quick processing of use
 To run the application:
 
 
-<b>Required Software</b>
-Android Studio 2021
+<b>Required Software</b><br>
+Android Studio 2021<br>
 Android API S or higher
 
 - Clone the repo into your AndroidStudioProjects folder or directly from within Android Studio
