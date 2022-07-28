@@ -61,11 +61,11 @@ class RegistrarLanding : AppCompatActivity() {
                 val registers = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("registers")
                 if(registers.hasChildren()) {
                     registers.children.forEach {
-                        var subscriberID = it.key.toString()
-                        var isFormComplete = it.child("isFormComplete").value.toString().toBoolean()
-                        var name = it.child("name").value.toString()
-                        var birthday = it.child("birthday").value.toString()
-                        var isNotified = it.child("isNotificationSent").value.toString().toBoolean()
+                        val subscriberID = it.key.toString()
+                        val isFormComplete = it.child("isFormComplete").value.toString().toBoolean()
+                        val name = it.child("name").value.toString()
+                        val birthday = it.child("birthday").value.toString()
+                        val isNotified = it.child("isNotificationSent").value.toString().toBoolean()
 
                         val registerCardLL = LinearLayout(applicationContext)
                         registerCardLL.orientation = LinearLayout.VERTICAL
@@ -87,7 +87,7 @@ class RegistrarLanding : AppCompatActivity() {
 
                         val tvBirthday = TextView(applicationContext)
                         tvBirthday.text = birthday
-                        tvBirthday.setPadding(0, 20, 0, 0)
+                        tvBirthday.setPadding(0, 20, 0, 20)
 
                         val isFormCompleted = CheckBox(applicationContext)
                         isFormCompleted.isChecked = isFormComplete
@@ -97,7 +97,7 @@ class RegistrarLanding : AppCompatActivity() {
                         val seeDetails = TextView(applicationContext)
                         seeDetails.text = "SEE INFO"
                         seeDetails.setTextColor(Color.DKGRAY)
-                        seeDetails.setPadding(0, 20, 0, 0)
+                        seeDetails.setPadding(0, 40, 0, 0)
                         seeDetails.gravity = Gravity.RIGHT
 
                         seeDetails.setOnClickListener {
@@ -106,11 +106,25 @@ class RegistrarLanding : AppCompatActivity() {
                             startActivity(intent)
                         }
 
+                        val removeRegister = TextView(applicationContext)
+                        removeRegister.text = "REMOVE REGISTER"
+                        removeRegister.setTextColor(Color.DKGRAY)
+                        removeRegister.setPadding(0, 40, 0, 0)
+                        removeRegister.gravity = Gravity.RIGHT
+
+                        removeRegister.setOnClickListener {
+                            account.child("registers").child(subscriberID).removeValue()
+                            accounts.child(subscriberID).child("registered").setValue(false)
+                            accounts.child(subscriberID).child("isComplete").setValue(false)
+                            Toast.makeText(applicationContext, "Register Deleted", Toast.LENGTH_SHORT).show()
+                        }
+
                         isFormCompleted.text = "Form Completed"
 
                         registerCardLL.addView(tvName)
                         registerCardLL.addView(tvBirthday)
                         registerCardLL.addView(isFormCompleted)
+                        registerCardLL.addView(removeRegister)
 
                         if(isFormComplete ) {
                             // add button to see register info
