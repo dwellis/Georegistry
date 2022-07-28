@@ -81,9 +81,7 @@ class UserForm : AppCompatActivity() {
 
             val intent = Intent(applicationContext, UserLanding::class.java)
             startActivity(intent)
-
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -94,7 +92,6 @@ class UserForm : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         return when(item.itemId) {
             R.id.main_menu_home -> {
                 var homeIntent = Intent(this, UserLanding::class.java)
@@ -108,7 +105,6 @@ class UserForm : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-
     }
 
     companion object {

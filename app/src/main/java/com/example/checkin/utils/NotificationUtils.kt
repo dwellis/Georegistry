@@ -56,7 +56,6 @@ fun createChannel(context: Context) {
  * with the LANDMARK_DATA from GeofencingConstatns in the GeofenceUtils file.
  */
 fun NotificationManager.sendGeofenceEnteredNotification(context: Context) {
-
     registered = Firebase.database.reference.child("accounts").child(Firebase.auth.uid.toString()).child("registered")
     registered.addValueEventListener(object : ValueEventListener{
         override fun onDataChange(snapshot: DataSnapshot) {
@@ -92,8 +91,7 @@ fun NotificationManager.sendGeofenceEnteredNotification(context: Context) {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(contentPendingIntent)
             .setSmallIcon(R.drawable.globe_logo_black)
-            .setStyle(bigPicStyle)
-            .setLargeIcon(mapImage)
+
 
         notify(NOTIFICATION_ID, builder.build())
     }
@@ -123,8 +121,7 @@ fun NotificationManager.sendGeofenceEnteredAdminNotification(context: Context) {
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setContentIntent(contentPendingIntent)
         .setSmallIcon(R.drawable.globe_logo_black)
-        .setStyle(bigPicStyle)
-        .setLargeIcon(mapImage)
+
 
     notify(NOTIFICATION_ID, builder.build())
 }

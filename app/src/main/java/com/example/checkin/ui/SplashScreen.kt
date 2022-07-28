@@ -79,7 +79,7 @@ class SplashScreen : AppCompatActivity() {
                 })
             }
             finish()
-        }, 1000)
+        }, 2000)
     }
 
     companion object {
