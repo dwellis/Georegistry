@@ -9,7 +9,6 @@ import android.view.*
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginTop
 import com.example.checkin.R
 import com.example.checkin.databinding.ActivityRegistrarLandingBinding
 import com.example.checkin.sendGeofenceEnteredAdminNotification
@@ -95,10 +94,11 @@ class RegistrarLanding : AppCompatActivity() {
                         isFormCompleted.isClickable = false
                         isFormCompleted.textSize = 16f
 
-                        val seeDetails = Button(applicationContext)
+                        val seeDetails = TextView(applicationContext)
                         seeDetails.text = "SEE INFO"
-                        seeDetails.setBackgroundColor(Color.parseColor("#000000"))
-                        seeDetails.setTextColor(Color.parseColor("#ffffff"))
+                        seeDetails.setTextColor(Color.DKGRAY)
+                        seeDetails.setPadding(0, 20, 0, 0)
+                        seeDetails.gravity = Gravity.RIGHT
 
                         seeDetails.setOnClickListener {
                             val intent = Intent(applicationContext, SeeInfo::class.java)
@@ -133,16 +133,11 @@ class RegistrarLanding : AppCompatActivity() {
                             }
                         }
 
-
                         registerCard.addView(registerCardLL)
 
                         binding.registrarLandingLl.addView(registerCard)
-
-
-
                     }
                 }
-
             }
             override fun onCancelled(error: DatabaseError) {
                 val noneTv = TextView(applicationContext)
