@@ -4,7 +4,6 @@ import android.app.NotificationManager
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -61,27 +60,14 @@ class RegistrarLanding : AppCompatActivity() {
 
         accounts.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val childCount = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("registers").childrenCount
                 val registers = snapshot.child(Firebase.auth.currentUser?.uid.toString()).child("registers")
-
-
-                    //send notification
-                    val notificationManager = ContextCompat.getSystemService(
-                        applicationContext,
-                        NotificationManager::class.java
-                    ) as NotificationManager
-
-                    notificationManager.sendGeofenceEnteredAdminNotification(applicationContext)
-
-
-                Log.d(TAG, "onDataChange: $childCount")
                 if(registers.hasChildren()) {
                     registers.children.forEach {
-
-                        val subscriberID = it.key.toString()
-                        val isFormComplete = it.child("isFormComplete").value.toString().toBoolean()
-                        val name = it.child("name").value.toString()
-                        val birthday = it.child("birthday").value.toString()
+                        var subscriberID = it.key.toString()
+                        var isFormComplete = it.child("isFormComplete").value.toString().toBoolean()
+                        var name = it.child("name").value.toString()
+                        var birthday = it.child("birthday").value.toString()
+                        var isNotified = it.child("isNotificationSent").value.toString().toBoolean()
 
                         val tvName = TextView(applicationContext)
                         tvName.text = name
@@ -110,8 +96,25 @@ class RegistrarLanding : AppCompatActivity() {
                         binding.registrarLandingLl.addView(tvBirthday)
                         binding.registrarLandingLl.addView(isFormCompleted)
 
-                        if(isFormComplete) {
+                        if(isFormComplete ) {
+                            // add button to see register info
                             binding.registrarLandingLl.addView(seeDetails)
+                            // send notification if they are not notified
+                            if (!isNotified) {
+                                //send notification
+                                val notificationManager = ContextCompat.getSystemService(
+                                    applicationContext,
+                                    NotificationManager::class.java
+                                ) as NotificationManager
+
+                                notificationManager.sendGeofenceEnteredAdminNotification(
+                                    applicationContext
+                                )
+
+                                // change admin notification status in db
+                                account.child("registers").child(subscriberID)
+                                    .child("isNotificationSent").setValue(true)
+                            }
                         }
                     }
                 }
