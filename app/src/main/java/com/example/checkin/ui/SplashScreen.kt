@@ -1,10 +1,12 @@
 package com.example.checkin.ui
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import com.example.checkin.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -54,6 +56,7 @@ class SplashScreen : AppCompatActivity() {
                 // add a listener to the accounts list
                 account.addValueEventListener(object : ValueEventListener {
 
+                    @RequiresApi(Build.VERSION_CODES.S)
                     override fun onDataChange(snapshot: DataSnapshot) {
 
                         // set admin flag

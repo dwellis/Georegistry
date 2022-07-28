@@ -1,12 +1,14 @@
 package com.example.checkin.ui
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.example.checkin.R
 import com.example.checkin.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -27,7 +29,6 @@ class LoginActivity : AppCompatActivity() {
     private var adminFlag : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -59,12 +60,12 @@ class LoginActivity : AppCompatActivity() {
         if(FirebaseAuth.getInstance().currentUser == null) {
             return when(item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, LoginActivity::class.java)
+                    val homeIntent = Intent(this, LoginActivity::class.java)
                     startActivity(homeIntent)
                     true
                 }
                 R.id.main_menu_profile -> {
-                    var loginIntent = Intent(this, LoginActivity::class.java)
+                    val loginIntent = Intent(this, LoginActivity::class.java)
                     startActivity(loginIntent)
                     true
                 }
@@ -74,12 +75,12 @@ class LoginActivity : AppCompatActivity() {
         else {
             return when(item.itemId) {
                 R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, ProfileActivity::class.java)
+                    val homeIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(homeIntent)
                     true
                 }
                 R.id.main_menu_profile -> {
-                    var profileIntent = Intent(this, ProfileActivity::class.java)
+                    val profileIntent = Intent(this, ProfileActivity::class.java)
                     startActivity(profileIntent)
                     true
                 }
@@ -93,18 +94,16 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-
                     // Sign in success
                     Toast.makeText(baseContext, "Signed In.", Toast.LENGTH_SHORT).show()
 
-                    // TODO: update email verification
                     sendEmailVerification()
-
 
                     // get account to check admin flag
                     account = Firebase.database.reference.child("accounts").child(Firebase.auth.currentUser?.uid.toString())
 
                     account.addValueEventListener(object : ValueEventListener {
+                        @RequiresApi(Build.VERSION_CODES.S)
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if(snapshot.child("admin").value.toString().toBoolean()) {
                                 val intent = Intent(applicationContext, RegistrarLanding::class.java)
@@ -114,7 +113,6 @@ class LoginActivity : AppCompatActivity() {
                                 startActivity(intent)
                             }
                         }
-
                         override fun onCancelled(error: DatabaseError) {
 
                         }
