@@ -2,15 +2,14 @@ package com.example.checkin.ui
 
 import android.app.NotificationManager
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.TextView
+import android.view.*
+import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginTop
 import com.example.checkin.R
 import com.example.checkin.databinding.ActivityRegistrarLandingBinding
 import com.example.checkin.sendGeofenceEnteredAdminNotification
@@ -69,18 +68,37 @@ class RegistrarLanding : AppCompatActivity() {
                         var birthday = it.child("birthday").value.toString()
                         var isNotified = it.child("isNotificationSent").value.toString().toBoolean()
 
+                        val registerCardLL = LinearLayout(applicationContext)
+                        registerCardLL.orientation = LinearLayout.VERTICAL
+                        val params = RelativeLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT)
+                        params.setMargins(10,30,10,30)
+
+                        val registerCard = CardView(applicationContext)
+                        registerCard.radius = 15f
+                        registerCard.setCardBackgroundColor(Color.parseColor("#f3f3f3"))
+                        registerCard.setContentPadding(36,36,36,36)
+                        registerCard.layoutParams = params
+                        registerCard.cardElevation = 15f
+
                         val tvName = TextView(applicationContext)
                         tvName.text = name
+                        tvName.textSize = 20f
 
                         val tvBirthday = TextView(applicationContext)
                         tvBirthday.text = birthday
+                        tvBirthday.setPadding(0, 20, 0, 0)
 
                         val isFormCompleted = CheckBox(applicationContext)
                         isFormCompleted.isChecked = isFormComplete
                         isFormCompleted.isClickable = false
+                        isFormCompleted.textSize = 16f
 
                         val seeDetails = Button(applicationContext)
-                        seeDetails.text = "See Information"
+                        seeDetails.text = "SEE INFO"
+                        seeDetails.setBackgroundColor(Color.parseColor("#000000"))
+                        seeDetails.setTextColor(Color.parseColor("#ffffff"))
 
                         seeDetails.setOnClickListener {
                             val intent = Intent(applicationContext, SeeInfo::class.java)
@@ -88,17 +106,15 @@ class RegistrarLanding : AppCompatActivity() {
                             startActivity(intent)
                         }
 
-                        tvName.setPadding(0, 100, 0, 0)
-                        tvName.textSize = 20f
                         isFormCompleted.text = "Form Completed"
 
-                        binding.registrarLandingLl.addView(tvName)
-                        binding.registrarLandingLl.addView(tvBirthday)
-                        binding.registrarLandingLl.addView(isFormCompleted)
+                        registerCardLL.addView(tvName)
+                        registerCardLL.addView(tvBirthday)
+                        registerCardLL.addView(isFormCompleted)
 
                         if(isFormComplete ) {
                             // add button to see register info
-                            binding.registrarLandingLl.addView(seeDetails)
+                            registerCardLL.addView(seeDetails)
                             // send notification if they are not notified
                             if (!isNotified) {
                                 //send notification
@@ -116,6 +132,14 @@ class RegistrarLanding : AppCompatActivity() {
                                     .child("isNotificationSent").setValue(true)
                             }
                         }
+
+
+                        registerCard.addView(registerCardLL)
+
+                        binding.registrarLandingLl.addView(registerCard)
+
+
+
                     }
                 }
 
