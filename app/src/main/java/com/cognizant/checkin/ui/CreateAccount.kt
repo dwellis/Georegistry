@@ -1,4 +1,4 @@
-package com.example.checkin.ui
+package com.cognizant.checkin.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,8 +7,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
-import com.example.checkin.R
-import com.example.checkin.databinding.ActivityCreateAccountBinding
+import com.cognizant.checkin.R
+import com.cognizant.checkin.databinding.ActivityCreateAccountBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference

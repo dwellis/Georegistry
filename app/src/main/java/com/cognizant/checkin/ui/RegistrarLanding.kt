@@ -1,4 +1,4 @@
-package com.example.checkin.ui
+package com.cognizant.checkin.ui
 
 import android.app.NotificationManager
 import android.content.Intent
@@ -9,9 +9,9 @@ import android.view.*
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import com.example.checkin.R
-import com.example.checkin.databinding.ActivityRegistrarLandingBinding
-import com.example.checkin.sendGeofenceEnteredAdminNotification
+import com.cognizant.checkin.R
+import com.cognizant.checkin.databinding.ActivityRegistrarLandingBinding
+import com.cognizant.checkin.sendGeofenceEnteredAdminNotification
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

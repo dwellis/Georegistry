@@ -1,4 +1,4 @@
-package com.example.checkin.ui
+package com.cognizant.checkin.ui
 
 import android.content.Intent
 import android.os.Build
@@ -10,9 +10,8 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.core.view.marginTop
-import com.example.checkin.R
-import com.example.checkin.databinding.ActivityAllLocationsBinding
+import com.cognizant.checkin.R
+import com.cognizant.checkin.databinding.ActivityAllLocationsBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

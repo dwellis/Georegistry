@@ -1,4 +1,4 @@
-package com.example.checkin
+package com.cognizant.checkin
 
 import org.junit.Test
 

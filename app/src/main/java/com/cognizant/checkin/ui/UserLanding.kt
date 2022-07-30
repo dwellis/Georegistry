@@ -1,4 +1,4 @@
-package com.example.checkin.ui
+package com.cognizant.checkin.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -18,11 +18,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.example.checkin.BuildConfig
-import com.example.checkin.R
-import com.example.checkin.createChannel
-import com.example.checkin.databinding.ActivityUserLandingBinding
-import com.example.checkin.utils.GeofenceBroadcastReceiver
+import com.cognizant.checkin.BuildConfig
+import com.cognizant.checkin.createChannel
+import com.cognizant.checkin.databinding.ActivityUserLandingBinding
+import com.cognizant.checkin.utils.GeofenceBroadcastReceiver
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.firebase.auth.FirebaseAuth
@@ -33,6 +32,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.cognizant.checkin.R
 
 @RequiresApi(Build.VERSION_CODES.S)
 class UserLanding : AppCompatActivity() {

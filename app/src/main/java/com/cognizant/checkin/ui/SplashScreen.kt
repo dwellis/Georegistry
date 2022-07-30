@@ -1,4 +1,4 @@
-package com.example.checkin.ui
+package com.cognizant.checkin.ui
 
 import android.content.Intent
 import android.os.Build
@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
-import com.example.checkin.R
+import com.cognizant.checkin.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot

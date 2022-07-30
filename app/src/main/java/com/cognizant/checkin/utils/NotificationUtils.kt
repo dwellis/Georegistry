@@ -1,4 +1,4 @@
-package com.example.checkin
+package com.cognizant.checkin
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,8 +9,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.example.checkin.ui.RegistrarLanding
-import com.example.checkin.ui.UserForm
+import com.cognizant.checkin.ui.RegistrarLanding
+import com.cognizant.checkin.ui.UserForm
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
