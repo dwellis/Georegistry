@@ -4,9 +4,6 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.cognizant.checkin.databinding.ActivityLoginBinding
@@ -15,7 +12,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.cognizant.checkin.R
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -79,45 +76,6 @@ class LoginActivity : AppCompatActivity() {
         binding.loginButtonCreateAccount.setOnClickListener {
             val intent = Intent(this, CreateAccount::class.java)
             startActivity(intent)
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.main_menu,menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(FirebaseAuth.getInstance().currentUser == null) {
-            return when(item.itemId) {
-                R.id.main_menu_home -> {
-                    val homeIntent = Intent(this, LoginActivity::class.java)
-                    startActivity(homeIntent)
-                    true
-                }
-                R.id.main_menu_profile -> {
-                    val loginIntent = Intent(this, LoginActivity::class.java)
-                    startActivity(loginIntent)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
-        }
-        else {
-            return when(item.itemId) {
-                R.id.main_menu_home -> {
-                    val homeIntent = Intent(this, ProfileActivity::class.java)
-                    startActivity(homeIntent)
-                    true
-                }
-                R.id.main_menu_profile -> {
-                    val profileIntent = Intent(this, ProfileActivity::class.java)
-                    startActivity(profileIntent)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
         }
     }
 
