@@ -22,11 +22,13 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var binding: ActivityLoginBinding
 
-    // db references
-    private lateinit var account : DatabaseReference
-
     // flag for redirecting if admin
     private var adminFlag : Boolean = false
+
+    // references for db
+    private lateinit var database: DatabaseReference
+    private lateinit var accounts : DatabaseReference
+    private lateinit var account : DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +38,36 @@ class LoginActivity : AppCompatActivity() {
 
         // Initialize Firebase Auth
         auth = Firebase.auth
+        // get db references for later access
+
+        database = Firebase.database.reference
+        accounts = Firebase.database.reference.child("accounts")
+        account = accounts.child(Firebase.auth.currentUser?.uid.toString())
+
+        // add a listener to the accounts list
+        account.addValueEventListener(object : ValueEventListener {
+            @RequiresApi(Build.VERSION_CODES.S)
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(auth.currentUser != null) {
+                    // set admin flag
+                    adminFlag = snapshot.child("admin").value.toString().toBoolean()
+
+                    // checks for landing page option
+                    if(adminFlag) {
+                        val intent = Intent(applicationContext, RegistrarLanding::class.java)
+                        startActivity(intent)
+                    } else {
+                        val intent = Intent(applicationContext, UserLanding::class.java)
+                        startActivity(intent)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
 
         // set button clicks for activity
         binding.login.setOnClickListener {
