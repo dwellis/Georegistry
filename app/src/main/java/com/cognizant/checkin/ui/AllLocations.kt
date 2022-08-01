@@ -1,15 +1,20 @@
 package com.cognizant.checkin.ui
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
 import com.cognizant.checkin.R
 import com.cognizant.checkin.databinding.ActivityAllLocationsBinding
 import com.google.firebase.auth.ktx.auth
@@ -51,9 +56,24 @@ class AllLocations : AppCompatActivity() {
                     snapshot.children.forEach {
                         // manually set for now
                         // TODO: Move into layout
+
+                        val locationCardLL = LinearLayout(applicationContext)
+                        locationCardLL.orientation = LinearLayout.VERTICAL
+                        val params = RelativeLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT)
+                        params.setMargins(10,30,10,30)
+
+                        val locationCard = CardView(applicationContext)
+                        locationCard.radius = 15f
+                        locationCard.setCardBackgroundColor(Color.parseColor("#f3f3f3"))
+                        locationCard.setContentPadding(36,36,36,36)
+                        locationCard.layoutParams = params
+                        locationCard.cardElevation = 15f
+
                         val tvTitle = TextView(applicationContext)
                         tvTitle.text = it.child("title").value.toString()
-                        tvTitle.setPadding(0, 110, 0, 0)
+                        tvTitle.setPadding(0, 25, 0, 0)
                         tvTitle.textSize = 20f
 
                         val tvDesc = TextView(applicationContext)
@@ -71,10 +91,15 @@ class AllLocations : AppCompatActivity() {
                             account.child("subscribed").setValue(id)
                         }
 
-                        binding.allLocationsLl.addView(tvTitle)
-                        binding.allLocationsLl.addView(tvAddress)
-                        binding.allLocationsLl.addView(tvDesc)
-                        binding.allLocationsLl.addView(but)
+                        locationCardLL.addView(tvTitle)
+                        locationCardLL.addView(tvAddress)
+                        locationCardLL.addView(tvDesc)
+                        locationCardLL.addView(but)
+
+                        locationCard.addView(locationCardLL)
+
+                        binding.allLocationsLl.addView(locationCard)
+
                     }
                 }
             }
