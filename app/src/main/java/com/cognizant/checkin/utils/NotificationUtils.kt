@@ -23,6 +23,8 @@ private const val NOTIFICATION_ID = 33
 private const val CHANNEL_ID = "GeofenceChannel"
 private lateinit var registered : DatabaseReference
 var isRegistered = false
+lateinit var complete: DatabaseReference
+var isFormCompete = false
 
 /*
  * We need to create a NotificationChannel associated with our CHANNEL_ID before sending a
@@ -56,14 +58,26 @@ fun createChannel(context: Context) {
  * with the LANDMARK_DATA from GeofencingConstatns in the GeofenceUtils file.
  */
 fun NotificationManager.sendGeofenceEnteredNotification(context: Context) {
-    registered = Firebase.database.reference.child("accounts").child(Firebase.auth.uid.toString()).child("registered")
-    registered.addValueEventListener(object : ValueEventListener{
+    val account = Firebase.database.reference.child("accounts").child(Firebase.auth.uid.toString())
+    registered = account.child("registered")
+    registered.addValueEventListener(object: ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             isRegistered = snapshot.value.toString().toBoolean()
         }
 
         override fun onCancelled(error: DatabaseError) {
             isRegistered = false
+        }
+    })
+
+    complete = registered.child("isFormComplete")
+    complete.addValueEventListener(object: ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            isFormCompete = snapshot.value.toString().toBoolean()
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+
         }
     })
 
@@ -79,9 +93,6 @@ fun NotificationManager.sendGeofenceEnteredNotification(context: Context) {
             context.resources,
             R.drawable.globe_logo_black
         )
-        val bigPicStyle = NotificationCompat.BigPictureStyle()
-            .bigPicture(mapImage)
-            .bigLargeIcon(null)
 
         // We use the name resource ID from the LANDMARK_DATA along with content_text to create
         // a custom message when a Geofence triggers.
@@ -91,7 +102,6 @@ fun NotificationManager.sendGeofenceEnteredNotification(context: Context) {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(contentPendingIntent)
             .setSmallIcon(R.drawable.globe_logo_black)
-
 
         notify(NOTIFICATION_ID, builder.build())
     }

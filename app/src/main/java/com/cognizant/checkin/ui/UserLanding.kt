@@ -112,8 +112,8 @@ class UserLanding : AppCompatActivity() {
 
                 if(isComplete) {
                     binding.userLandingIsComplete.isChecked = true
-                    binding.userLandingButtonForm.visibility = View.GONE
-                    binding.userLandingButtonForm.isClickable = false
+                    binding.userLandingButtonForm.text = "Update"
+                    binding.userLandingButtonForm.isClickable = true
                 }
 
                 if(!isComplete) {

@@ -117,6 +117,8 @@ class RegistrarLanding : AppCompatActivity() {
                             accounts.child(subscriberID).child("registered").setValue(false)
                             accounts.child(subscriberID).child("isFormComplete").setValue(false)
                             Toast.makeText(applicationContext, "Register Deleted", Toast.LENGTH_SHORT).show()
+                            account.child("registers").child(subscriberID)
+                                .child("isNotificationSent").setValue(false)
                         }
 
                         isFormCompleted.text = "Form Completed"
@@ -126,7 +128,7 @@ class RegistrarLanding : AppCompatActivity() {
                         registerCardLL.addView(isFormCompleted)
                         registerCardLL.addView(removeRegister)
 
-                        if(isFormComplete ) {
+                        if(isFormComplete) {
                             // add button to see register info
                             registerCardLL.addView(seeDetails)
                             // send notification if they are not notified

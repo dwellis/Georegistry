@@ -4,10 +4,13 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.annotation.RequiresApi
+import androidx.core.text.set
 import com.cognizant.checkin.R
 import com.cognizant.checkin.databinding.ActivityUserFormBinding
 import com.google.firebase.auth.ktx.auth
@@ -27,6 +30,9 @@ class UserForm : AppCompatActivity() {
     private lateinit var account : DatabaseReference
     private lateinit var locations : DatabaseReference
 
+    lateinit var subscribedID: String
+    lateinit var subscriberData: DatabaseReference
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,43 +45,39 @@ class UserForm : AppCompatActivity() {
         account = accounts.child(Firebase.auth.currentUser?.uid.toString())
         locations = database.child("locations")
 
+        fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 
+        // update db with new info
+        accounts.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                // the uid of the subscribed registrar
+                subscribedID = snapshot.child(Firebase.auth.uid.toString()).child("subscribed").value.toString()
+                // the subscribed users location in the database that is accessible by the registrar
+                val subscriber = snapshot.child(subscribedID).child("registers").child(Firebase.auth.uid.toString())
+                subscriberData = accounts.child(subscribedID).child("registers").child(Firebase.auth.uid.toString())
+
+                Log.d(TAG, "onDataChange - isFormComplete: ${subscriber.child("isFormComplete").value.toString()}")
+
+            }
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
 
         binding.userFormButtonSubmit.setOnClickListener {
 
 
-            // update db with new info
-            accounts.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
+            // set the user data in the db for registrar
+            subscriberData.child("isFormComplete").setValue(true)
+            subscriberData.child("firstName").setValue(binding.userFormFirstNameTv.text.toString())
+            subscriberData.child("lastName").setValue(binding.userFormLastNameActv.text.toString())
+            subscriberData.child("birthday").setValue(binding.userFormEditBirthday.text.toString())
+            subscriberData.child("phone").setValue(binding.userFormEditPhone.text.toString())
+            subscriberData.child("email").setValue(binding.userFormEditEmail.text.toString())
+            subscriberData.child("address").setValue(binding.userFormEditAddress.text.toString())
 
-                    val subscribedID = snapshot.child(Firebase.auth.uid.toString()).child("subscribed").value.toString()
-                    accounts.child(subscribedID).child("registers").child(Firebase.auth.uid.toString()).child("isFormComplete").setValue(true)
-                    accounts.child(subscribedID).child("registers").child(Firebase.auth.uid.toString()).child("firstName").setValue(
-                        binding.userFormFirstNameActv.text.toString()
-                    )
-                    accounts.child(subscribedID).child("registers").child(Firebase.auth.uid.toString()).child("lastName").setValue(
-                        binding.userFormLastNameActv.text.toString()
-                    )
-                    accounts.child(subscribedID).child("registers").child(Firebase.auth.uid.toString()).child("birthday").setValue(
-                        binding.userFormEditBirthday.text.toString()
-                    )
-                    accounts.child(subscribedID).child("registers").child(Firebase.auth.uid.toString()).child("phone").setValue(
-                        binding.userFormEditPhone.text.toString()
-                    )
-                    accounts.child(subscribedID).child("registers").child(Firebase.auth.uid.toString()).child("email").setValue(
-                        binding.userFormEditEmail.text.toString()
-                    )
-                    accounts.child(subscribedID).child("registers").child(Firebase.auth.uid.toString()).child("address").setValue(
-                        binding.userFormEditAddress.text.toString()
-                    )
-
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-            })
-
+            // set flag to show user has completed form for user landing
             account.child("isFormComplete").setValue(true)
 
             val intent = Intent(applicationContext, UserLanding::class.java)

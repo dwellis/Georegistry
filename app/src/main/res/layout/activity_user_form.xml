@@ -45,8 +45,8 @@
             android:layout_height="wrap_content"
             android:padding="15dp">
 
-            <AutoCompleteTextView
-                android:id="@+id/user_form_first_name_actv"
+            <EditText
+                android:id="@+id/user_form_first_name_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="First Name"
@@ -54,14 +54,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <AutoCompleteTextView
+            <EditText
                 android:id="@+id/user_form_last_name_actv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:hint="Last Name"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/user_form_first_name_actv" />
+                app:layout_constraintTop_toBottomOf="@+id/user_form_first_name_tv" />
 
             <EditText
                 android:id="@+id/user_form_edit_birthday"
