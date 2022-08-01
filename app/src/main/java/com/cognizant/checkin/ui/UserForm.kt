@@ -1,16 +1,15 @@
-package com.example.checkin.ui
+package com.cognizant.checkin.ui
 
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.annotation.RequiresApi
-import com.example.checkin.R
-import com.example.checkin.databinding.ActivityUserFormBinding
+import com.cognizant.checkin.R
+import com.cognizant.checkin.databinding.ActivityUserFormBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -81,9 +80,7 @@ class UserForm : AppCompatActivity() {
 
             val intent = Intent(applicationContext, UserLanding::class.java)
             startActivity(intent)
-
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -94,7 +91,6 @@ class UserForm : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         return when(item.itemId) {
             R.id.main_menu_home -> {
                 var homeIntent = Intent(this, UserLanding::class.java)
@@ -108,7 +104,6 @@ class UserForm : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-
     }
 
     companion object {
