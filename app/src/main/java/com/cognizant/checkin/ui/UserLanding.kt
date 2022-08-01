@@ -162,7 +162,7 @@ class UserLanding : AppCompatActivity() {
         binding.userLandingButtonUnsubscribe.setOnClickListener {
             account.child("subscribed").removeValue()
             account.child("registered").setValue(false)
-            account.child("isComplete").setValue(false)
+            account.child("isFormComplete").setValue(false)
         }
 
         // END ONCREATE
