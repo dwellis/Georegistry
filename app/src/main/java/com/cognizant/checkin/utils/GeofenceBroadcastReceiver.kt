@@ -1,14 +1,12 @@
-package com.example.checkin.utils
+package com.cognizant.checkin.utils
 
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.provider.ContactsContract
 import android.util.Log
 import androidx.core.content.ContextCompat
-import com.example.checkin.sendGeofenceEnteredNotification
-import com.example.checkin.ui.binding
+import com.cognizant.checkin.sendGeofenceEnteredNotification
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.google.firebase.auth.ktx.auth
@@ -18,7 +16,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlin.math.log
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 

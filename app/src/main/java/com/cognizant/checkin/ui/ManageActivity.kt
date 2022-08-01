@@ -1,16 +1,14 @@
-package com.example.checkin.ui
+package com.cognizant.checkin.ui
 
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.example.checkin.BuildConfig
-import com.example.checkin.R
-import com.example.checkin.databinding.ActivityManageBinding
+import com.cognizant.checkin.BuildConfig
+import com.cognizant.checkin.databinding.ActivityManageBinding
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -21,9 +19,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.io.File
-import java.io.FileInputStream
 import java.util.*
+import com.cognizant.checkin.R
 
 
 class ManageActivity : AppCompatActivity() {
@@ -91,18 +88,14 @@ class ManageActivity : AppCompatActivity() {
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                // TODO: Get info about the selected place.
                 id = place.id.toString()
                 name = place.name.toString()
                 address = place.address.toString()
                 lat = place.latLng?.latitude.toString()
                 lng = place.latLng?.longitude.toString()
-                Log.i(TAG, "Place: ${place.name}, ${place.id}, ${lat}, ${lng}")
             }
-
             override fun onError(status: Status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: $status")
+
             }
         })
 

@@ -22,7 +22,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Subscribe to a Location"
-        android:textSize="20sp"
+        android:textSize="26sp"
+        android:textColor="@color/black"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,6 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6">
 

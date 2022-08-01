@@ -1,34 +1,33 @@
-package com.example.checkin.ui
+package com.cognizant.checkin.ui
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.widget.Toast
-import com.example.checkin.R
-import com.example.checkin.databinding.ActivityLoginBinding
+import androidx.annotation.RequiresApi
+import com.cognizant.checkin.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
+
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var binding: ActivityLoginBinding
 
-    // db references
-    private lateinit var account : DatabaseReference
-
     // flag for redirecting if admin
     private var adminFlag : Boolean = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    // references for db
+    private lateinit var database: DatabaseReference
+    private lateinit var accounts : DatabaseReference
+    private lateinit var account : DatabaseReference
 
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -36,6 +35,36 @@ class LoginActivity : AppCompatActivity() {
 
         // Initialize Firebase Auth
         auth = Firebase.auth
+        // get db references for later access
+
+        database = Firebase.database.reference
+        accounts = Firebase.database.reference.child("accounts")
+        account = accounts.child(Firebase.auth.currentUser?.uid.toString())
+
+        // add a listener to the accounts list
+        account.addValueEventListener(object : ValueEventListener {
+            @RequiresApi(Build.VERSION_CODES.S)
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(auth.currentUser != null) {
+                    // set admin flag
+                    adminFlag = snapshot.child("admin").value.toString().toBoolean()
+
+                    // checks for landing page option
+                    if(adminFlag) {
+                        val intent = Intent(applicationContext, RegistrarLanding::class.java)
+                        startActivity(intent)
+                    } else {
+                        val intent = Intent(applicationContext, UserLanding::class.java)
+                        startActivity(intent)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
 
         // set button clicks for activity
         binding.login.setOnClickListener {
@@ -45,48 +74,8 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.loginButtonCreateAccount.setOnClickListener {
-            Log.d(TAG, "Create account clicked")
             val intent = Intent(this, CreateAccount::class.java)
             startActivity(intent)
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.main_menu,menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(FirebaseAuth.getInstance().currentUser == null) {
-            return when(item.itemId) {
-                R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, LoginActivity::class.java)
-                    startActivity(homeIntent)
-                    true
-                }
-                R.id.main_menu_profile -> {
-                    var loginIntent = Intent(this, LoginActivity::class.java)
-                    startActivity(loginIntent)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
-        }
-        else {
-            return when(item.itemId) {
-                R.id.main_menu_home -> {
-                    var homeIntent = Intent(this, ProfileActivity::class.java)
-                    startActivity(homeIntent)
-                    true
-                }
-                R.id.main_menu_profile -> {
-                    var profileIntent = Intent(this, ProfileActivity::class.java)
-                    startActivity(profileIntent)
-                    true
-                }
-                else -> super.onOptionsItemSelected(item)
-            }
         }
     }
 
@@ -95,18 +84,16 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-
                     // Sign in success
                     Toast.makeText(baseContext, "Signed In.", Toast.LENGTH_SHORT).show()
 
-                    // TODO: update email verification
                     sendEmailVerification()
-
 
                     // get account to check admin flag
                     account = Firebase.database.reference.child("accounts").child(Firebase.auth.currentUser?.uid.toString())
 
                     account.addValueEventListener(object : ValueEventListener {
+                        @RequiresApi(Build.VERSION_CODES.S)
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if(snapshot.child("admin").value.toString().toBoolean()) {
                                 val intent = Intent(applicationContext, RegistrarLanding::class.java)
@@ -116,14 +103,12 @@ class LoginActivity : AppCompatActivity() {
                                 startActivity(intent)
                             }
                         }
-
                         override fun onCancelled(error: DatabaseError) {
 
                         }
                     })
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithEmail:failure", task.exception)
                     Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
                 }
             }

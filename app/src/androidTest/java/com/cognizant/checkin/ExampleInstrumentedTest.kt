@@ -1,4 +1,4 @@
-package com.example.checkin
+package com.cognizant.checkin
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

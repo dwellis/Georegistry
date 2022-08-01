@@ -1,4 +1,4 @@
-package com.example.checkin.ui
+package com.cognizant.checkin.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -19,11 +18,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.example.checkin.BuildConfig
-import com.example.checkin.R
-import com.example.checkin.createChannel
-import com.example.checkin.databinding.ActivityUserLandingBinding
-import com.example.checkin.utils.GeofenceBroadcastReceiver
+import com.cognizant.checkin.BuildConfig
+import com.cognizant.checkin.createChannel
+import com.cognizant.checkin.databinding.ActivityUserLandingBinding
+import com.cognizant.checkin.utils.GeofenceBroadcastReceiver
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.firebase.auth.FirebaseAuth
@@ -34,6 +32,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.cognizant.checkin.R
 
 @RequiresApi(Build.VERSION_CODES.S)
 class UserLanding : AppCompatActivity() {
@@ -92,7 +91,7 @@ class UserLanding : AppCompatActivity() {
 
                 subscribedID = snapshot.child("subscribed").value.toString()
                 isRegistered = snapshot.child("registered").value.toString().toBoolean()
-                isComplete = snapshot.child("isComplete").value.toString().toBoolean()
+                isComplete = snapshot.child("isFormComplete").value.toString().toBoolean()
 
                 if(snapshot.child("firstName").value != null) {
                     val welcomeText = "Welcome, " + snapshot.child("firstName").value.toString()
@@ -131,7 +130,6 @@ class UserLanding : AppCompatActivity() {
         
         locations.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d(TAG, "onDataChange: ${snapshot.childrenCount}")
                 if(snapshot.hasChildren()) {
                     snapshot.children.forEach {
                         if(it.key.toString() == subscribedID) {
@@ -216,7 +214,6 @@ class UserLanding : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d(TAG, "onRequestPermissionResult")
 
         if (
             grantResults.isEmpty() ||
@@ -271,7 +268,6 @@ class UserLanding : AppCompatActivity() {
             }
             else -> REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
         }
-        Log.d(TAG, "Request foreground only location permission")
         ActivityCompat.requestPermissions(
             this@UserLanding,
             permissionsArray,
@@ -294,7 +290,7 @@ class UserLanding : AppCompatActivity() {
                         REQUEST_TURN_DEVICE_LOCATION_ON
                     )
                 } catch (sendEx: IntentSender.SendIntentException) {
-                    Log.d(TAG, "Error getting location settings resolution: " + sendEx.message)
+
                 }
             } else {
                 Toast.makeText(
@@ -333,13 +329,10 @@ class UserLanding : AppCompatActivity() {
             addOnCompleteListener {
                 geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
                     addOnSuccessListener {
-                        Log.d(TAG, "Geofence added " + geofence.requestId)
+
                     }
                     addOnFailureListener {
-                        if ((it.message != null)) {
-                            Log.w(TAG, "Geofences not added")
-                            Log.w(TAG, it.message.toString())
-                        }
+
                     }
                 }
             }
@@ -360,10 +353,10 @@ class UserLanding : AppCompatActivity() {
         }
         geofencingClient.removeGeofences(geofencePendingIntent)?.run {
             addOnSuccessListener {
-                Log.d(TAG, "Geofences removed")
+
             }
             addOnFailureListener {
-                Log.e(TAG, "Geofences not removed")
+
             }
         }
     }
