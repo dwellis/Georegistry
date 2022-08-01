@@ -115,7 +115,7 @@ class RegistrarLanding : AppCompatActivity() {
                         removeRegister.setOnClickListener {
                             account.child("registers").child(subscriberID).removeValue()
                             accounts.child(subscriberID).child("registered").setValue(false)
-                            accounts.child(subscriberID).child("isComplete").setValue(false)
+                            accounts.child(subscriberID).child("isFormComplete").setValue(false)
                             Toast.makeText(applicationContext, "Register Deleted", Toast.LENGTH_SHORT).show()
                         }
 

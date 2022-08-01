@@ -61,7 +61,7 @@ class SeeInfo : AppCompatActivity() {
         binding.seeInfoButtonDelete.setOnClickListener {
             account.child("registers").child(intent.extras?.get("UID").toString()).removeValue()
             accounts.child(intent.extras?.get("UID").toString()).child("registered").setValue(false)
-            accounts.child(intent.extras?.get("UID").toString()).child("isComplete").setValue(false)
+            accounts.child(intent.extras?.get("UID").toString()).child("isFormComplete").setValue(false)
             Toast.makeText(applicationContext, "Register Deleted", Toast.LENGTH_SHORT).show()
             val intent = Intent(applicationContext, RegistrarLanding::class.java)
             startActivity(intent)
